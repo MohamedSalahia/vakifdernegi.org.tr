@@ -8,7 +8,7 @@
     <section class="banner-section style-three">
         <div class="swiper-container banner-slider">
             <div class="swiper-wrapper">
-                @foreach($sliders as $slider)
+                @forelse($sliders as $slider)
 
                     <!-- Slide Item -->
                     <div class="swiper-slide" style="background-image: url({{url('/thumbnail/1920/800/80/storage/slider_images/'.$slider->image)}});">
@@ -28,7 +28,23 @@
                         </div>
                     </div>
 
-                @endforeach
+                @empty
+                    <!-- Default hero when no slider has been added from the admin panel -->
+                    <div class="swiper-slide" style="background-image: url({{ setting('banner') ? url('/thumbnail/1920/800/80/storage/settings/'.setting('banner')) : asset('web/images/background/bg-7.jpg') }});">
+                        <div class="content-outer">
+                            <div class="content-box justify-content-center">
+                                <div class="inner text-center">
+                                    <h1>@lang('site.site_name')</h1>
+                                    <div class="text" style="color:#fff;font-size:20px;margin:15px 0 25px">@lang('site.hero_text')</div>
+                                    <div class="link-box">
+                                        <a href="{{ route('about_us') }}" class="theme-btn btn-style-ten"><span>@lang('site.about_us')</span></a>
+                                        <a href="{{ route('contact_us') }}" class="theme-btn btn-style-ten"><span>@lang('site.contact_us')</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforelse
 
             </div>
             <div class="banner-slider-pagination style-four"></div>
@@ -419,6 +435,35 @@
     </section>
     @endif
 
+    <!-- Official association / transparency -->
+    @php($assoc = config('association'))
+    <section style="padding:70px 0;background:#f7f7f7">
+        <div class="auto-container">
+            <div class="sec-title text-center">
+                <h5>@lang('site.about_us')</h5>
+                <h1>@lang('site.home_about_title')</h1>
+            </div>
+            <div class="row" style="justify-content:center">
+                <div class="col-lg-7" style="margin-bottom:20px">
+                    <p style="font-size:17px;line-height:1.9">@lang('site.home_about_text')</p>
+                    <a href="{{ route('about_us') }}" class="theme-btn btn-style-one" style="margin-top:10px"><span>@lang('site.read_more')</span></a>
+                </div>
+                <div class="col-lg-4">
+                    <div style="background:#fff;border:1px solid #e6e6e6;border-radius:8px;padding:24px">
+                        <h4 style="margin-bottom:14px">@lang('site.footer_association_title')</h4>
+                        <p style="margin:0 0 6px"><strong>{{ $assoc['legal_name'] }}</strong></p>
+                        <p style="margin:0 0 6px">@lang('site.kutuk_no'): <span dir="ltr">{{ $assoc['kutuk_no'] }}</span></p>
+                        <p style="margin:0 0 6px">@lang('site.vergi_no'): <span dir="ltr">{{ $assoc['vergi_no'] }}</span></p>
+                        <p style="margin:0 0 6px">@lang('site.founded'): {{ $assoc['founded'] }}</p>
+                        <p style="margin:0 0 12px">{{ $assoc['address'][app()->getLocale()] ?? $assoc['address']['tr'] }}</p>
+                        <a href="{{ $assoc['derbis_verify_url'] }}" target="_blank" rel="noopener">@lang('site.verify_on_derbis')</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @if($blogs->count() > 0)
     <!-- Blog Section -->
     <section class="blog-section">
         <div class="auto-container">
@@ -446,6 +491,7 @@
             </div>
         </div>
     </section>
+    @endif
 @endsection
 
 @push('scripts')

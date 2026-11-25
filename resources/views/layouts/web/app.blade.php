@@ -96,6 +96,24 @@
 <!-- Custom JS -->
 <script src="{{asset('web/js/script'.(app()->getLocale() == 'ar' ? '_rtl': '').'.js')}}"></script>
 @stack('scripts')
+{{-- Cookie notice (only essential cookies are used) --}}
+<div id="cookie-notice" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#222;color:#fff;padding:14px 20px;font-size:14px;line-height:1.6;box-shadow:0 -2px 10px rgba(0,0,0,.2)">
+    <div style="max-width:1170px;margin:0 auto;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+        <span>@lang('site.cookie_notice') <a href="{{ route('privacy') }}" style="color:#fff;text-decoration:underline">@lang('site.privacy')</a></span>
+        <button type="button" id="cookie-notice-ok" style="background:#fff;color:#222;border:0;border-radius:4px;padding:8px 18px;font-weight:600;cursor:pointer">@lang('site.cookie_ok')</button>
+    </div>
+</div>
+<script>
+    (function () {
+        var box = document.getElementById('cookie-notice');
+        try { if (localStorage.getItem('cookie_notice_ok') === '1') return; } catch (e) {}
+        box.style.display = 'block';
+        document.getElementById('cookie-notice-ok').addEventListener('click', function () {
+            try { localStorage.setItem('cookie_notice_ok', '1'); } catch (e) {}
+            box.style.display = 'none';
+        });
+    })();
+</script>
 @if(session('error'))
 <script>new Noty({ text: @json(session('error')), type: 'error', timeout: 4000, killer: true }).show();</script>
 @endif

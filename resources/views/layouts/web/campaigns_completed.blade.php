@@ -91,12 +91,12 @@
 
     @endforeach
 @else
-    <div class="alert alert-dismissible fade show" role="alert">
-        <strong><h3>@lang('site.no_data_found')</h3></strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div class="header-sign-in-up">
-        <a href="{{route('/')}}" class="theme-btn btn-style-one"><span>@lang('site.return_to_homepage')</span></a>
+    <div class="col-lg-10" style="margin:20px auto;text-align:center">
+        <div style="background:#fff;border:1px solid #e6e6e6;border-radius:8px;padding:36px 24px">
+            <h3 style="margin-bottom:12px">@lang('site.no_completed_campaigns')</h3>
+            <p style="margin-bottom:20px">@lang('site.no_campaigns_contact')</p>
+            <a href="{{ route('contact_us') }}" class="theme-btn btn-style-one"><span>@lang('site.contact_us')</span></a>
+        </div>
     </div>
 @endif
 

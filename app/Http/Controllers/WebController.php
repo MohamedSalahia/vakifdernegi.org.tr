@@ -360,7 +360,7 @@ class WebController extends Controller
     {
         $campaigns = Campaign::where('c_category_id', $id)->paginate(8);
         $campaigns = Campaign::where('c_category_id', $id)->where('status', 'active')->where('complete', 'no')->with('category')->paginate(8);
-        $category = CampaignCategory::where('id', $id)->first();
+        $category = CampaignCategory::where('id', $id)->firstOrFail();
         //dd($category);
         return view('web.campaigns_category', compact(['campaigns', 'category'] ));
 
