@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,6 +33,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // A guest's donation cart follows them into their account when they log in.
+        Event::listen(Login::class, function (Login $event) {
+            app(\App\Services\CartService::class)->mergeGuestCartInto($event->user->getAuthIdentifier());
+        });
+
         // Site layout partials need these on every page (not only WebController pages),
         // e.g. password reset, error pages and the donation checkout.
         View::composer('layouts.web.*', function ($view) {

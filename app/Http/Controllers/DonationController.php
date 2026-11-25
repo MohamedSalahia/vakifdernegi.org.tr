@@ -6,7 +6,7 @@ use App\Mail\DonationReceived;
 use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Page;
-use App\Models\UserCart;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -73,11 +73,10 @@ class DonationController extends WebController
         ]);
     }
 
-    public function cart()
+    public function cart(CartService $cart)
     {
-        $userCarts = UserCart::query()->with('campaign')->where('user_id', auth()->id())->get()
-            ->filter(fn ($c) => $c->campaign && $c->campaign->status === 'active');
-        if ($userCarts->isEmpty()) {
+        [$items] = $cart->items();
+        if ($items->isEmpty()) {
             return redirect()->route('cart');
         }
 
@@ -85,7 +84,7 @@ class DonationController extends WebController
             'kind' => 'cart',
             'title' => __('site.cart_donation'),
             'type' => __('site.cart_donation'),
-            'items' => $userCarts->map(fn ($c) => [
+            'items' => $items->map(fn ($c) => [
                 'campaign_id' => $c->campaign_id,
                 'donation_type' => 'campaign',
                 'label' => $c->campaign->name,
@@ -129,8 +128,8 @@ class DonationController extends WebController
             ]);
             $donation->items()->createMany($checkout['items']);
 
-            if ($checkout['kind'] === 'cart' && auth()->check()) {
-                UserCart::query()->where('user_id', auth()->id())->delete();
+            if ($checkout['kind'] === 'cart') {
+                app(CartService::class)->clear();
             }
 
             return $donation;

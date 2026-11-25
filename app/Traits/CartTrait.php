@@ -2,15 +2,13 @@
 
 namespace App\Traits;
 
-use App\Models\UserCart;
-use Auth;
+use App\Services\CartService;
 
+/** Kept for older callers; the cart logic lives in App\Services\CartService. */
 trait CartTrait
 {
-    public static function cartCount($request){
-        //dd($request->cookie('XSRF-TOKEN'));
-       //return  Auth::check() ?  UserCart::query()->where('XSRF_TOKEN', $request->cookie('XSRF-TOKEN'))->where('status',0)->count() : null;
-       return UserCart::query()->where('cookie_cart_identifier', $request->cookie('XSRF-TOKEN'))->where('status',0)->count();
-
+    public static function cartCount($request = null): int
+    {
+        return app(CartService::class)->count();
     }
 }

@@ -2,6 +2,7 @@
 <html lang="{{ app()->getLocale() }}" dir="{{ LaravelLocalization::getCurrentLocaleDirection() }}">
 <head>
     <meta charset="utf-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="author" content="@lang('site.author')">
     <meta name="description" content="@if(setting(app()->getLocale())['description']) {{setting(app()->getLocale())['description']}} @else @lang('site.site_description') @endif">
@@ -95,6 +96,45 @@
 <script src="{{asset('web/js/knob.js')}}"></script>
 <!-- Custom JS -->
 <script src="{{asset('web/js/script'.(app()->getLocale() == 'ar' ? '_rtl': '').'.js')}}"></script>
+{{-- Donation cart helper (POST + CSRF) --}}
+<script>
+    window.vakifCart = (function () {
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        function notify(text, type) {
+            if (window.Noty) { new Noty({ text: text, type: type || 'alert', timeout: 2500, killer: true, theme: 'semanticui', layout: 'bottomLeft' }).show(); }
+            else { alert(text); }
+        }
+        function setCount(n) {
+            document.querySelectorAll('.item-count').forEach(function (el) { el.textContent = n; el.style.display = n > 0 ? '' : 'none'; });
+        }
+        function post(url, data) {
+            return fetch(url, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': token, 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify(data)
+            }).then(function (r) {
+                return r.json().catch(function () { return {}; }).then(function (body) {
+                    if (!r.ok) {
+                        var msg = body.message || @json(__('site.cart_error'));
+                        if (body.errors) { msg = Object.values(body.errors)[0][0]; }
+                        notify(msg, 'error');
+                        throw new Error(msg);
+                    }
+                    if (typeof body.count !== 'undefined') { setCount(body.count); }
+                    if (body.message) { notify(body.message); }
+                    return body;
+                });
+            });
+        }
+        return {
+            add: function (campaignId, amount) { return post(@json(route('add.to.cart')), { campaign_id: campaignId, amount: amount }); },
+            update: function (id, amount) { return post(@json(route('cart.update')), { id: id, amount: amount }); },
+            remove: function (id) { return post(@json(route('cart.remove')), { id: id }); },
+            notify: notify
+        };
+    })();
+</script>
 @stack('scripts')
 {{-- Cookie notice (only essential cookies are used) --}}
 <div id="cookie-notice" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#222;color:#fff;padding:14px 20px;font-size:14px;line-height:1.6;box-shadow:0 -2px 10px rgba(0,0,0,.2)">

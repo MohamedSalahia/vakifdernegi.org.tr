@@ -1,3 +1,4 @@
+@php($cartCount = app(\App\Services\CartService::class)->count())
 <header class="main-header">
     <!-- Top bar -->
     <div class="top-bar theme-bg">
@@ -103,10 +104,7 @@
                         </div>
                         <div class="cart-btn">
                             <a href="{{route('cart')}}">
-                                @php
-                                //dd(session('count'));
-                                @endphp
-                                <div class="cart-icon"><span class="flaticon-bag"></span>{{--<span class="item-count">{{session('count') ?? 0}}</span>--}}</div>
+                                <div class="cart-icon"><span class="flaticon-bag"></span><span class="item-count" style="{{ $cartCount > 0 ? '' : 'display:none' }}">{{ $cartCount }}</span></div>
                             </a>
                         </div>
                         @if(!Auth::check())
@@ -175,7 +173,7 @@
                 </div>
                 <div class="cart-btn">
                     <a href="{{route('cart')}}">
-                        <div class="cart-icon"><span class="flaticon-bag"></span>{{--<span class="item-count">{{session('count') ?? 0}}</span>--}}</div>
+                        <div class="cart-icon"><span class="flaticon-bag"></span><span class="item-count" style="{{ $cartCount > 0 ? '' : 'display:none' }}">{{ $cartCount }}</span></div>
                     </a>
                 </div>
                 @if(!Auth::check())

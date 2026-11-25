@@ -93,13 +93,6 @@
                                 </form>
                                 <div class="overlay-content">
                                     <ul class="clearfix" style="display: flex;justify-content: space-evenly;">
-                                        <li>
-                                            @if(\Illuminate\Support\Facades\Auth::check())
-                                                <a href="javascript:;" class="theme-btn btn-style-two addToCart_{{$campaign->id}}"><span class="fa fa-shopping-cart"></span><span> @lang('site.add_to_card')</span></a>
-                                            @else
-                                                <a href="{{ route('login') }}" class="theme-btn btn-style-two"><span class="fa fa-shopping-cart"></span><span> @lang('site.add_to_card')</span></a>
-                                            @endif
-                                        </li>
 
                                         <li>
                                             <form method="get" action="{{ route('donate.campaign', $campaign->id) }}">
@@ -155,42 +148,6 @@
                 }
                 $(this).closest('form').find('.priceLive').val(amount);
             });
-
-        $('.addToCart_{{$campaign->id}}').click(function (){
-
-            var price = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
-
-            if (!price) {
-                alert(@json(__('site.enter_amount_alert')));
-                $(".price_{{$campaign->id}}").addClass("errorInput");
-                $(".price_{{$campaign->id}}").autofocus;
-                return false;
-            }
-            var campaignId = $('.campaignId_{{$campaign->id}}').val();
-            if (!campaignId) {
-                alert("campaignId must be filled out");
-                return false;
-            }
-            $.ajax({
-                type: "get",
-                url: '{{route('add.to.cart')}}',
-                data: {
-                    price: price,
-                    campaignId: campaignId
-                }
-            }).success(function( data ) {
-                $('.item-count').empty().append(data.count);
-                new Noty({
-                    text: data.message,
-                    timeout: 2000,
-                    killer: true,
-                    type: "alert",
-                    theme: 'semanticui',
-                    layout: 'bottomLeft'
-                }).show();
-            });
-
-        })
 
         $(function() {
 

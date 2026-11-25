@@ -9,26 +9,21 @@ use Illuminate\Support\Facades\URL;
 
 Route::prefix(LaravelLocalization::setLocale())
     ->group(function () {
-        Route::get('cart', [\App\Http\Controllers\WebController::class, 'cart'])->name('cart');
+        // Donation cart
+        Route::get('cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart');
+        Route::post('cart/add', [\App\Http\Controllers\CartController::class, 'add'])->middleware('throttle:30,1')->name('add.to.cart');
+        Route::post('cart/update', [\App\Http\Controllers\CartController::class, 'update'])->middleware('throttle:30,1')->name('cart.update');
+        Route::post('cart/remove', [\App\Http\Controllers\CartController::class, 'remove'])->middleware('throttle:30,1')->name('cart.remove');
 
         // Donation checkout (campaign / zakat / cart)
         Route::get('donate/campaign/{campaign}', [\App\Http\Controllers\DonationController::class, 'campaign'])->name('donate.campaign');
         Route::get('donate/zakat', [\App\Http\Controllers\DonationController::class, 'zakat'])->name('donate.zakat');
-        Route::get('donate/cart', [\App\Http\Controllers\DonationController::class, 'cart'])->middleware('auth')->name('donate.cart');
+        Route::get('donate/cart', [\App\Http\Controllers\DonationController::class, 'cart'])->name('donate.cart');
         Route::post('donate', [\App\Http\Controllers\DonationController::class, 'store'])->middleware('throttle:10,1')->name('donate.store');
         Route::get('donate/thanks/{donation}', [\App\Http\Controllers\DonationController::class, 'show'])->middleware('signed')->name('donate.show');
     });
 
-Route::get('add-to-cart', [\App\Http\Controllers\WebController::class, 'addToCartPost'])->name('add.to.cart');
-Route::get('cart/remove', [\App\Http\Controllers\WebController::class, 'cartRemove'])->name('cart.remove');
 
-Route::prefix(LaravelLocalization::setLocale())
-    ->middleware([
-        'auth',
-    ])
-    ->group(function () {
-        Route::get('cart/quantity/update', [\App\Http\Controllers\WebController::class, 'cartQuantityUpdate'])->name('cart.quantity.update');
-    });
 
 Route::any('/thumbnail/{width}/{height}/{quality}/{filepath}', 'App\Http\Controllers\ImageController@getImage')->where(['filepath' => '.*']);
 

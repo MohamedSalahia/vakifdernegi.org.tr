@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\CampaignCategory;
-use App\Models\Cart;
-use App\Traits\CartTrait;
 use App\Models\Blog;
 use App\Models\Campaign;
 use App\Models\Page;
@@ -29,7 +27,6 @@ use Illuminate\Support\Str;
 
 class WebController extends Controller
 {
-    use cartTrait;
     public function __construct(){
 
         //dd(Auth::check());
@@ -222,139 +219,6 @@ class WebController extends Controller
         return view('web.blogs', compact(['category', 'blogs', 'categories'] ));
 
     }// end of delete
-
-    public function addToCart($id)
-    {
-        //session()->flush();
-
-        $campaign = Campaign::findOrFail($id);
-
-        $cart = session()->get('cart', []);
-
-        if(isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-        } else {
-            $cart[$id] = [
-                "name" => $campaign->name,
-            ];
-        }
-        session()->put('cart', $cart);
-
-        //dd(session()->all());
-        return redirect()->back()->with('success', 'Product added to cart successfully!');
-
-    }// end of index
-
-    function generateUniqueIdentifier()
-    {
-        return Str::uuid()->toString();
-    }
-
-
-    public function addToCartPost(Request $request)
-    {
-
-        session()->flush();
-        $campaign = Campaign::find($request->campaignId);
-
-        $oldCart = Session::has('cart') ? Session::get('cart') : null;
-
-        $cart = new Cart($oldCart, $request->price);
-
-        $cart->add($request->price, $campaign->id);
-
-        $request->session()->put('cart', $cart);
-
-        //dd($request->session()->get('cart'));
-
-        //return redirect()->route('/');
-
-        /*$campaign = Campaign::find($request->campaignId);
-
-        $cart = session()->get('cart', []);
-
-        $cart[$request->campaignId] = [
-
-            'name' => $campaign->name,
-            'price' => $request->price,
-
-        ];
-        session()->put('cart', $cart);
-
-        dd(session()->get('cart'));*/
-
-        /*---------------------------------------*/
-
-
-        $user_id = (Auth::user() ? Auth::user()->id : null);
-        $campaign_id = $request->campaignId;
-        $price = $request->price;
-        //$cookie_cart_identifier = $cookies[0]->getValue();
-        $cookie_cart_identifier = rand(2,50);
-        $input['campaign_id'] = $campaign_id;
-        $input['status'] = false;
-        $input['price'] = $price;
-        $input['user_id'] = $user_id;
-        //$input['quantity'] = UserCart::query()->where(['user_id'=>$user_id, 'campaign_id'=>$campaign_id])->where('status', 0)->count() + 1;
-        $input['total_price'] = $input['price'];
-
-        //dd($input);
-        UserCart::updateOrCreate([
-            'cookie_cart_identifier' => $cookie_cart_identifier,
-            'status' => 0,
-            'campaign_id' => $campaign_id
-        ], $input);
-
-        session()->flash('success', __('site.added_successfully'));
-        session(['count' => self::cartCount($request)]);
-        //return redirect()->route('campaigns');
-
-        return response()->json([
-            //'message'=> __('site.added_successfully_well'),
-            'message'=> __('Başarıyla eklendi'),
-            'count'=> self::cartCount($request),
-        ]);
-
-    }
-
-    public function cart(){
-
-        $userCarts = UserCart::query()->where('user_id', auth()->id())->where('status',0)->get();
-        $totalPrice = UserCart::query()->where('user_id', auth()->id())->sum('total_price');
-
-        return view('web.cart', compact('userCarts', 'totalPrice'));
-    }
-
-    public function cartRemove(Request $request){
-
-        UserCart::findOrFail($request->userCartId)->delete();
-
-        session()->flash('success', __('site.deleted_successfully'));
-        session(['count' => self::cartCount($request)]);
-        //return redirect()->route('campaigns');
-
-        return response()->json([
-            'message'=> __('site.deleted_successfully'),
-            'count'=> self::cartCount($request),
-        ]);
-    }
-
-    public function cartQuantityUpdate(Request $request){
-
-        //dd($request->all());
-        UserCart::findOrFail($request->userCartId)->update(['quantity'=> $request->quantity,'total_price'=> $request->price * $request->quantity]);
-
-        $totalPrice = UserCart::query()->where('user_id', auth()->id())->sum('total_price');
-        session()->flash('success', __('site.updated_successfully'));
-        session(['count' => self::cartCount($request)]);
-
-        return response()->json([
-            'message'=> __('site.updated_successfully'),
-            'count'=> self::cartCount($request),
-            'totalPrice'=> $totalPrice,
-        ]);
-    }
-
 
     public function campaignCategory($id)
     {
