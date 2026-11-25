@@ -67,3 +67,26 @@ th:nth-child(even),td:nth-child(even) {
 
 
 
+
+/* ------------------------------------------------------------------
+   Header: keep logo + menu on one row on desktop.
+   Turkish menu labels are longer than the Arabic ones the template
+   was designed for, so the default 30px gaps wrapped the menu
+   under the logo before scrolling.
+   ------------------------------------------------------------------ */
+@media only screen and (min-width: 1200px) {
+    .main-header .header-upper .wrapper-box { flex-wrap: nowrap; }
+    .main-header .header-upper .logo-column { flex-shrink: 0; }
+    .main-header .header-upper .right-column { flex: 1 1 auto; display: flex; justify-content: flex-end; }
+    .main-header .header-upper .option-wrapper { flex-wrap: nowrap; }
+
+    html[dir="ltr"] .main-header .header-upper .main-menu .navigation > li { margin-right: 20px; }
+    html[dir="rtl"] .main-header .header-upper .main-menu .navigation > li { margin-left: 20px; }
+    .main-header .header-upper .main-menu .navigation > li > a { font-size: 15px; white-space: nowrap; }
+
+    html[dir="ltr"] .main-header .header-upper .option-wrapper > div { margin-left: 16px; }
+    html[dir="rtl"] .main-header .header-upper .option-wrapper > div { margin-right: 16px; }
+    .main-header .header-upper .link-btn .btn-style-one { padding: 6px 20px; white-space: nowrap; }
+    html[dir="ltr"] .main-header .header-upper .nav-outer { padding-right: 16px; }
+    html[dir="rtl"] .main-header .header-upper .nav-outer { padding-left: 16px; }
+}

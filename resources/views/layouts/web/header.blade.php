@@ -9,7 +9,7 @@
                 <div class="right-content">
                     <ul class="contact-info">
                         <li><span class="flaticon-mail"></span> <a href="mailto:{{setting('email')}}">{{setting('email')}}</a></li>
-                        <li><span class="flaticon-phone"></span> <a href="tel:{{phone_remove_spaces_and_plus()}}">{{setting('phone')}}</a></li>
+                        <li><span class="flaticon-phone"></span> <a href="tel:{{ preg_replace('/\s+/', '', config('association.phone')) }}" dir="ltr">{{ config('association.phone') }}</a></li>
                     </ul>
                     <div class="language-switcher">
                         <div class="languages">

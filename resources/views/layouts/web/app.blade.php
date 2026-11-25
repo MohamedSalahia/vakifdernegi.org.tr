@@ -47,13 +47,13 @@
     <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script><![endif]-->
     <!--[if lt IE 9]><script src="{{asset('web/js/respond.js')}}"></script><![endif]-->
 
-    <link href="{{asset('web/css/custom.css?id=2')}}" rel="stylesheet">
+    <link href="{{asset('web/css/custom.css?id=3')}}" rel="stylesheet">
 
     @stack('styles')
 </head>
 
 <body>
-<a href="https://api.whatsapp.com/send?phone={{phone_remove_spaces_and_plus()}}" target="_blank" class="whatsapp-float"><img width="40" src="{{asset('img/whatsapp.png')}}"></a>
+<a href="https://wa.me/{{ preg_replace('/\D+/', '', config('association.phone')) }}" target="_blank" class="whatsapp-float"><img width="40" src="{{asset('img/whatsapp.png')}}"></a>
 
 <div class="page-wrapper">
     <!-- Preloader -->
