@@ -35,7 +35,7 @@
 
                     @endphp
                     <span>@lang('site.campaign_status'):</span> <br>@lang('site.complete')</div>
-                <div class="goal"><span>@lang('site.total_amount'):</span> <br>{{$campaign->goal}} @lang('site.kuveyt_dinari')</div>
+                <div class="goal"><span>@lang('site.total_amount'):</span> <br>{{ number_format((float) $campaign->goal, 0, ",", ".") }} @lang('site.kuveyt_dinari')</div>
                 <div class="progress-block">
                     <div class="inner-box">
                         <div class="graph-outer">

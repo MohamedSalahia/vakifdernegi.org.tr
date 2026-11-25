@@ -17,7 +17,7 @@
                                 <span class="count-text" ></span><span class="affix">@lang('site.complete')</span>
                             </div>
                             <div class="goal">
-                                <a href="javascript:;"><span>@lang('site.toplam_tutar'):</span>{{$campaign->goal}} @lang('site.kuveyt_dinari')</a>
+                                <a href="javascript:;"><span>@lang('site.toplam_tutar'):</span>{{ number_format((float) $campaign->goal, 0, ",", ".") }} @lang('site.kuveyt_dinari')</a>
                             </div>
                         </div>
 

@@ -85,13 +85,13 @@
 
                                                 @endphp
                                                 --}}{{--{{dd($percentage)}}--}}{{--
-                                                <a href="#"><span>التبرع:</span>{{$userDonation}} د.ك</a>
+                                                <a href="#"><span>التبرع:</span>{{ number_format((float) $userDonation, 0, ",", ".") }} د.ك</a>
                                             </div>
                                             <div class="count-box">
                                                 <span class="count-text" data-speed="3000" data-stop="{{$percentage}}">0</span><span class="affix">%</span>
                                             </div>
                                             <div class="goal">
-                                                <a href="#"><span>مطلوب:</span>{{$campaign->goal}} د.ك</a>
+                                                <a href="#"><span>مطلوب:</span>{{ number_format((float) $campaign->goal, 0, ",", ".") }} د.ك</a>
                                             </div>
                                             --}}{{--<div class="overlay-content">
                                                 <ul class="clearfix">
@@ -274,13 +274,13 @@
 
                                                 @endphp
                                                 --}}{{--{{dd($percentage)}}--}}{{--
-                                                <a href="#"><span>التبرع:</span>{{$userDonation}} د.ك</a>
+                                                <a href="#"><span>التبرع:</span>{{ number_format((float) $userDonation, 0, ",", ".") }} د.ك</a>
                                             </div>
                                             <div class="count-box">
                                                 <span class="count-text" data-speed="3000" data-stop="{{$percentage}}">0</span><span class="affix">%</span>
                                             </div>
                                             <div class="goal">
-                                                <a href="#"><span>مطلوب:</span>{{$campaign->goal}} د.ك</a>
+                                                <a href="#"><span>مطلوب:</span>{{ number_format((float) $campaign->goal, 0, ",", ".") }} د.ك</a>
                                             </div>
                                             --}}{{--<div class="overlay-content">
                                                 <ul class="clearfix">

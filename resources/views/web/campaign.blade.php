@@ -32,8 +32,8 @@
                         $userDonation = \App\Models\Donation::confirmedTotalForCampaign($campaign->id);
                         $percentage = $campaign->goal > 0 ? min(100, round(($userDonation / $campaign->goal) * 100)) : 0
                     @endphp
-                    <span>@lang('site.donate_total'):</span> <br>{{$userDonation}} @lang('site.kuveyt_dinari')</div>
-                <div class="goal"><span>@lang('site.require'):</span> <br>{{$campaign->goal}} @lang('site.kuveyt_dinari')</div>
+                    <span>@lang('site.donate_total'):</span> <br>{{ number_format((float) $userDonation, 0, ",", ".") }} @lang('site.kuveyt_dinari')</div>
+                <div class="goal"><span>@lang('site.require'):</span> <br>{{ number_format((float) $campaign->goal, 0, ",", ".") }} @lang('site.kuveyt_dinari')</div>
                 <div class="progress-block">
                     <div class="inner-box">
                         <div class="graph-outer">

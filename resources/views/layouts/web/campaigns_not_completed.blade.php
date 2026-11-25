@@ -20,13 +20,13 @@
 
                                 @endphp
                                 {{--{{dd($percentage)}}--}}
-                                <a href="javascript:;"><span>@lang('site.donate_total'):</span>{{$userDonation}} @lang('site.kuveyt_dinari')</a>
+                                <a href="javascript:;"><span>@lang('site.donate_total'):</span>{{ number_format((float) $userDonation, 0, ",", ".") }} @lang('site.kuveyt_dinari')</a>
                             </div>
                             <div class="count-box">
                                 <span class="count-text" data-speed="3000" data-stop="{{$percentage}}">0</span><span class="affix">%</span>
                             </div>
                             <div class="goal">
-                                <a href="javascript:;"><span>@lang('site.require'):</span>{{$campaign->goal}} @lang('site.kuveyt_dinari')</a>
+                                <a href="javascript:;"><span>@lang('site.require'):</span>{{ number_format((float) $campaign->goal, 0, ",", ".") }} @lang('site.kuveyt_dinari')</a>
                             </div>
                             {{--<div class="donars"><span>@lang('site.country')</span> <br>{{$campaign->country}}</div>--}}
 
