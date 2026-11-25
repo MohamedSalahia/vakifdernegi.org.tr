@@ -43,38 +43,38 @@
                             <!-- Tab panes -->
                             <div class="tab-content">
 
-                                <h1> قال رسول الله صلى الله عليه وسلم:</h1>
+                                <h1>@lang('site.zakat_hadith_intro')</h1>
                                 <div class="text">
-                                    إن الصدقة لتطفئ غضب الرب وتدفع ميتة السوء
+                                    @lang('site.zakat_hadith')
                                 </div>
                                 <form method="get" action="{{route('donate.zakat')}}">
                                         <ul class="chicklet-list clearfix text-center">
                                             <li>
                                                 <input type="radio" id="sadaka" name="typeOfDonate" value="sadaka" checked="checked">
-                                                <label for="sadaka">صدقة</label>
+                                                <label for="sadaka">@lang('site.sadaka')</label>
                                             </li>
                                             <li>
                                                 <input type="radio" id="zakat" name="typeOfDonate" value="zakat">
-                                                <label for="zakat" >زكاة</label>
+                                                <label for="zakat">@lang('site.zakat_type')</label>
                                             </li>
                                             <li>
                                                 <input type="radio" id="kfaratYamin" name="typeOfDonate" value="kfaratYamin">
-                                                <label for="kfaratYamin" >كفارة يمين</label>
+                                                <label for="kfaratYamin">@lang('site.kfaratYamin')</label>
                                             </li>
                                             <li>
                                                 <input type="radio" id="kfaratSiyam" name="typeOfDonate" value="kfaratSiyam">
-                                                <label for="kfaratSiyam" >كفارة صيام</label>
+                                                <label for="kfaratSiyam">@lang('site.kfaratSiyam')</label>
                                             </li>
                                             <li>
                                                 <input type="radio" id="nzr" name="typeOfDonate" value="nzr">
-                                                <label for="nzr" >نذر</label>
+                                                <label for="nzr">@lang('site.nzr')</label>
                                             </li>
                                             <li>
-                                                <input type="number" min="5" name="price" class="price" placeholder="المبلغ ....." required>
+                                                <input type="number" min="5" name="price" class="price" placeholder="@lang('site.amount_placeholder')" required>
                                             </li>
                                         </ul>
                                         <div class="other-amount d-flex align-items-center">
-                                            <button class="theme-btn btn-style-two" style="background: #604120;" type="submit"><span class="flaticon-heart-1"></span><span> دفع مباشر</span></button>
+                                            <button class="theme-btn btn-style-two" style="background: #604120;" type="submit"><span class="flaticon-heart-1"></span><span> @lang('site.direct_donation')</span></button>
                                         </div>
 
                                     </form>

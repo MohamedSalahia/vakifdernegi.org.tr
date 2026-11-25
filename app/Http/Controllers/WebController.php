@@ -103,16 +103,6 @@ class WebController extends Controller
 
     }// end of index
 
-    public function blog_show(Blog $blog)
-    {
-
-        $blog = Blog::whereTranslationLike('name_slug', '%' . $slug . '%')->with('category')->get();
-
-        //dd($blog);
-
-        return view('web.blog', compact('blog'));
-
-    }// end of index
 
     public function contact()
     {
@@ -144,45 +134,22 @@ class WebController extends Controller
 
     }// end of index
 
-    public function galleries()
-    {
-        $photos = Photo::all();
-        return view('web.galleries', compact('photos'));
 
-    }// end of index
 
-    public function jobs()
-    {
-        return view('web.jobs');
 
-    }// end of index
-
-    public function videos()
-    {
-        $videos = Video::all();
-        return view('web.videos', compact('videos'));
-
-    }// end of index
-
-    public function branches()
-    {
-        return view('web.branches');
-
-    }// end of index
 
     public function contact_form(Request $request)
     {
-        //dd($request);
-        request()->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
-            'visit_type' => 'required',
-            'subject' => 'required',
-            'message' => 'required',
+        $data = $request->validate([
+            'name'    => 'required|string|max:100',
+            'email'   => 'required|email|max:150',
+            'phone'   => 'required|string|max:30',
+            'subject' => 'required|string|max:150',
+            'message' => 'required|string|max:5000',
+            'kvkk'    => 'accepted',
         ]);
-
-        $data = $request->all();
+        unset($data['kvkk']);
+        $data['visit_type'] = 'new_visit'; // legacy NOT NULL column from the old template
 
         Contact::create($data);
 
@@ -192,24 +159,6 @@ class WebController extends Controller
 
     }
 
-    public function contact_service_form(Request $request, Service $service)
-    {
-        //dd($request);
-        request()->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
-            'message' => 'required',
-        ]);
-
-        $data = $request->all();
-
-        Contact::create($data);
-
-        session()->flash('contact_success', __('site.added_successfully'));
-        return redirect(url()->previous() . '#contact_form');
-
-    }
 
     public function subscribe(Request $request)
     {
@@ -417,12 +366,6 @@ class WebController extends Controller
 
     }// end of delete
 
-    public function said_about_us()
-    {
-        $page = Page::query()->where('id', 4)->firstOrFail();
-        return view('web.page', compact('page'));
-
-    }// end of delete
 
     public function privacy()
     {

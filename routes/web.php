@@ -46,7 +46,6 @@ Route::prefix(LaravelLocalization::setLocale())
         Route::get('/terms-of-use', 'App\Http\Controllers\WebController@terms_of_use')->name('terms-of-use');
         Route::get('/donation-policy', 'App\Http\Controllers\WebController@donation_policy')->name('donation-policy');
         Route::get('/delivery-and-refund-policy', 'App\Http\Controllers\WebController@delivery_and_refund')->name('delivery-and-refund-policy');
-        Route::get('said_about_us', 'App\Http\Controllers\WebController@said_about_us')->name('said_about_us');
 
 
         //Route::get('/home', 'HomeController@index')->name('home');
@@ -57,7 +56,7 @@ Route::prefix(LaravelLocalization::setLocale())
         Route::get('/about_us', 'App\Http\Controllers\WebController@about')->name('about_us');
         Route::get('/contact_us', 'App\Http\Controllers\WebController@contact')->name('contact_us');
 
-        Route::post('contact', 'App\Http\Controllers\WebController@contact_form')->name('contact.post');
+        Route::post('contact', 'App\Http\Controllers\WebController@contact_form')->middleware('throttle:5,1')->name('contact.post');
         Route::post('subscribe', 'App\Http\Controllers\WebController@subscribe')->name('subscribe.post');
         Route::get('page/{page}/{slug?}', 'App\Http\Controllers\WebController@page')->name('page.show');
         Route::get('blog/{blog}/{slug?}', 'App\Http\Controllers\WebController@single_blog')->name('blog.show');

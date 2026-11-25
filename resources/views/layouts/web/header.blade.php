@@ -8,21 +8,12 @@
                 </div>--}}
                 <div class="right-content">
                     <ul class="contact-info">
-                        <li><span class="flaticon-mail"></span> <a href="mailto:support@charity.com">{{setting('email')}}</a></li>
+                        <li><span class="flaticon-mail"></span> <a href="mailto:{{setting('email')}}">{{setting('email')}}</a></li>
                         <li><span class="flaticon-phone"></span> <a href="tel:{{phone_remove_spaces_and_plus()}}">{{setting('phone')}}</a></li>
                     </ul>
                     <div class="language-switcher">
                         <div class="languages">
-                            @php
-                                if (LaravelLocalization::getCurrentLocale() == 'ar'){
-                                    $lang = 'العربية';
-                                }elseif (LaravelLocalization::getCurrentLocale() == 'en'){
-                                    $lang = 'English';
-                                }else{
-                                    $lang = 'Turkish';
-                                }
-                            @endphp
-                            <span class="current" title="{{app()->getLocale()}}">{{$lang}}</span>
+                            <span class="current" title="{{app()->getLocale()}}">{{ LaravelLocalization::getCurrentLocaleNative() }}</span>
                             <span class="hover">{{app()->getLocale()}}</span>
                             <ul>
                                 @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
@@ -72,12 +63,11 @@
 
                                         <li><a href="{{route('zakat')}}">@lang('site.zakat')</a></li>
                                         <li><a href="{{route('blogs')}}">@lang('site.blogs')</a></li>
-                                        {{--<li><a href="{{route('contact_us')}}">@lang('site.contact_us')</a></li>--}}
+                                        <li><a href="{{route('contact_us')}}">@lang('site.contact_us')</a></li>
                                         <li class="dropdown"><a href="javascript:;">@lang('site.about_us')</a>
                                             <ul>
                                                 <li><a href="{{route('about_us')}}">@lang('site.about_us')</a></li>
                                                 <li><a href="{{route('bank_accounts')}}">@lang('site.bank_accounts')</a></li>
-                                                <li><a href="{{route('said_about_us')}}">@lang('site.said_about_us')</a></li>
                                                 <li><a href="{{route('privacy')}}">@lang('site.privacy')</a></li>
                                                 <li><a href="{{route('terms-of-use')}}">@lang('site.term')</a></li>
                                                 <li><a href="{{route('donation-policy')}}">@lang('site.donation_policy')</a></li>

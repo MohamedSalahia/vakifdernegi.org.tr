@@ -120,7 +120,7 @@
                                             }).success(function (data) {
                                                 var total = $('.price_{{$userCart->id}}').val() * $('.quantity-spinner_{{$userCart->id}}').val()
                                                 $('.item-count').empty().append(data.count);
-                                                $('.totalPrice').empty().append('<span>المجموع الكلي:</span>'+data.totalPrice+'$');
+                                                $('.totalPrice').empty().append('<span>' + @json(__('site.total')) + ':</span> ' + data.totalPrice + ' ' + @json(__('site.kuveyt_dinari')));
                                                 $('.sub-total_{{$userCart->id}}').empty().text('$'+total);
                                                 new Noty({
                                                     text: data.message,

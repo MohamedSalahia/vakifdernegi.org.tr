@@ -78,7 +78,7 @@
                             <ul>
 
 
-                                <a href="{{route('/')}}" class="btn btn-blue blue-hover mt-10">العودة للصفحة الرئيسية</a>
+                                <a href="{{route('/')}}" class="btn btn-blue blue-hover mt-10">@lang('site.return_to_home_page')</a>
                             </ul>
                         </div>
                         @endif

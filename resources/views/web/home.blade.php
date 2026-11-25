@@ -65,7 +65,7 @@
                                                 @php
                                                     $userDonation = \App\Models\UserDonation::query()->where('campaign_id', $campaign->id)->sum('total_price');
 
-                                                    $percentage = ($userDonation / $campaign->goal) * 100
+                                                    $percentage = $campaign->goal > 0 ? min(100, round(($userDonation / $campaign->goal) * 100)) : 0
 
                                                 @endphp
                                                 --}}{{--{{dd($percentage)}}--}}{{--
@@ -142,14 +142,10 @@
                                             </li>
 
                                             <li>
-                                                @if(\Illuminate\Support\Facades\Auth::check())
-                                                    <form method="get" action="{{ route('donate.campaign', $campaign->id) }}">
+                                                <form method="get" action="{{ route('donate.campaign', $campaign->id) }}">
                                                         <input type="hidden" name="priceLive" class="priceLive">
                                                         <button class="theme-btn btn-style-two quickDonate_{{$campaign->id}}" type="submit" data-loading-text="Please wait..."><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></button>
                                                     </form>
-                                                @else
-                                                    <a href="{{ route('login') }}" class="theme-btn btn-style-two"><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></a>
-                                                @endif
                                             </li>
                                         </ul>
                                     </div>
@@ -258,7 +254,7 @@
                                                 @php
                                                     $userDonation = \App\Models\UserDonation::query()->where('campaign_id', $campaign->id)->sum('total_price');
 
-                                                    $percentage = ($userDonation / $campaign->goal) * 100
+                                                    $percentage = $campaign->goal > 0 ? min(100, round(($userDonation / $campaign->goal) * 100)) : 0
 
                                                 @endphp
                                                 --}}{{--{{dd($percentage)}}--}}{{--
@@ -335,14 +331,10 @@
                                             </li>
 
                                             <li>
-                                                @if(\Illuminate\Support\Facades\Auth::check())
-                                                    <form method="get" action="{{ route('donate.campaign', $campaign->id) }}">
+                                                <form method="get" action="{{ route('donate.campaign', $campaign->id) }}">
                                                         <input type="hidden" name="priceLive" class="priceLive">
                                                         <button class="theme-btn btn-style-two quickDonate_{{$campaign->id}}" type="submit" data-loading-text="Please wait..."><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></button>
                                                     </form>
-                                                @else
-                                                    <a href="{{ route('login') }}" class="theme-btn btn-style-two"><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></a>
-                                                @endif
                                             </li>
                                         </ul>
                                     </div>

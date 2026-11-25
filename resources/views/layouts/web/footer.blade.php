@@ -1,74 +1,54 @@
+@php($assoc = config('association'))
 <footer class="main-footer">
     <div class="auto-container">
         <div class="widget-wrapper">
             <div class="row">
-                <!-- Contact Widget -->
+                <!-- Contact -->
                 <div class="col-lg-3 col-md-6 contact-widget footer-widget">
                     <h4 class="widget-title">@lang('site.footer_column1_title')</h4>
                     <ul>
-                        <li>{{setting(app()->getLocale())['address']}}</li>
-                        <li><a href="mailto:{{setting('email')}}">{{setting('email')}} </a></li>
+                        <li>{{ $assoc['address'][app()->getLocale()] ?? $assoc['address']['tr'] }}</li>
+                        <li><a href="mailto:{{ $assoc['email'] }}">{{ $assoc['email'] }}</a></li>
                     </ul>
-                    <h3><a href="tel:{{phone_remove_spaces_and_plus()}}">{{setting('phone')}}</a></h3>
+                    <h3><a href="tel:{{ preg_replace('/\s+/', '', $assoc['phone']) }}" dir="ltr">{{ $assoc['phone'] }}</a></h3>
                 </div>
-                <!-- About Widget -->
+
+                <!-- Institutional links -->
                 <div class="col-lg-3 col-md-6 about-widget footer-widget">
                     <h4 class="widget-title">@lang('site.footer_column2_title')</h4>
                     <ul>
-                        <li><a href="{{route('/')}}">@lang('site.home')</a></li>
-                        <li><a href="{{route('about_us')}}">@lang('site.about_us')</a></li>
-                        {{--<li><a href="{{route('contact_us')}}">@lang('site.contact_us')</a></li>--}}
-                        <li><a href="{{route('bank_accounts')}}">@lang('site.bank_accounts')</a></li>
-                        <li><a href="{{route('said_about_us')}}">@lang('site.said_about_us')</a></li>
-                        <li><a href="{{route('privacy')}}">@lang('site.privacy')</a></li>
-                        <li><a href="{{route('terms-of-use')}}">@lang('site.term')</a></li>
+                        <li><a href="{{ route('/') }}">@lang('site.home')</a></li>
+                        <li><a href="{{ route('about_us') }}">@lang('site.about_us')</a></li>
+                        <li><a href="{{ route('campaigns') }}">@lang('site.campaigns')</a></li>
+                        <li><a href="{{ route('bank_accounts') }}">@lang('site.bank_accounts')</a></li>
+                        <li><a href="{{ route('contact_us') }}">@lang('site.contact_us')</a></li>
                     </ul>
                 </div>
-                <!-- Link Widget -->
-                <div class="col-lg-3 col-md-6 link-widget footer-widget">
-                    <h4 class="widget-title">@lang('site.footer_column3_title')</h4>
-                    <ul>
-                        @foreach($campaignCategories as $campaignCategory)
-                            <li><a href="#">{{$campaignCategory->name}}</a></li>
-                        @endforeach
 
+                <!-- Legal links -->
+                <div class="col-lg-3 col-md-6 link-widget footer-widget">
+                    <h4 class="widget-title">@lang('site.footer_legal_title')</h4>
+                    <ul>
+                        <li><a href="{{ route('privacy') }}">@lang('site.privacy')</a></li>
+                        <li><a href="{{ route('terms-of-use') }}">@lang('site.term')</a></li>
+                        <li><a href="{{ route('donation-policy') }}">@lang('site.donation_policy')</a></li>
+                        <li><a href="{{ route('delivery-and-refund-policy') }}">@lang('site.delivery-and-refund-policy')</a></li>
                     </ul>
                 </div>
-                <!-- Newsletter Widget -->
-                <div class="col-lg-3 col-md-6 office-location-widget footer-widget">
-                    <h4 class="widget-title">@lang('site.our_offices')</h4>
-                    <div class="wrapper-box">
-                        <div class="location-point">
-                            <div class="content">
-                                <div class="text">@lang('site.kuwait') </div>
-                            </div>
-                            <span class="point"></span>
-                        </div>
-                        {{--<div class="location-point">
-                            <div class="content">
-                                <div class="text">@lang('site.our_offices2')</div>
-                            </div>
-                            <span class="point"></span>
-                        </div>
-                        <div class="location-point">
-                            <div class="content">
-                                <div class="text">@lang('site.our_offices3')</div>
-                            </div>
-                            <span class="point"></span>
-                        </div>
-                        <div class="location-point">
-                            <div class="content">
-                                <div class="text">@lang('site.our_offices4')</div>
-                            </div>
-                            <span class="point"></span>
-                        </div>
-                        <div class="location-point">
-                            <div class="content">
-                                <div class="text">@lang('site.our_offices5')</div>
-                            </div>
-                            <span class="point"></span>
-                        </div>--}}
-                    </div>
+
+                <!-- Official association details -->
+                <div class="col-lg-3 col-md-6 link-widget footer-widget">
+                    <h4 class="widget-title">@lang('site.footer_association_title')</h4>
+                    <ul>
+                        <li><strong>{{ $assoc['legal_name'] }}</strong></li>
+                        <li>@lang('site.kutuk_no'): <span dir="ltr">{{ $assoc['kutuk_no'] }}</span></li>
+                        <li>
+                            @lang('site.vergi_no'): <span dir="ltr">{{ $assoc['vergi_no'] }}</span>
+                            @if($assoc['vergi_dairesi']) ({{ $assoc['vergi_dairesi'] }}) @endif
+                        </li>
+                        <li>@lang('site.mersis_no'): <span dir="ltr">{{ $assoc['mersis_no'] }}</span></li>
+                        <li><a href="{{ $assoc['derbis_verify_url'] }}" target="_blank" rel="noopener">@lang('site.verify_on_derbis')</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -78,22 +58,16 @@
                 @if(config('donation.card_payment_enabled'))
                 <a href="javascript:void(0)"><div class="icon"><img width="150" src="{{asset('img/visa-master.png')}}" alt="Visa / Mastercard"></div></a>
                 @endif
-                <!--<div class="copyright-text">@lang('site.copyright') <a href="#">{{setting(app()->getLocale())['title']}}.</a> <br>@lang('site.by') <a href="https://brandx-sa.com/">@lang('site.brandx').</a></div>-->
+                <div class="copyright-text">© {{ date('Y') }} {{ $assoc['legal_name'] }}. @lang('site.all_rights_reserved')</div>
             </div>
             <div class="right-content">
                 <ul class="social-icon-three">
-                    @if(setting('facebook'))
-                        <li><a href="{{setting('facebook')}}" target="_blank"><span class="fa fa-facebook"></span></a></li>
-                    @endif
-                    @if(setting('twitter'))
-                        <li><a href="{{setting('twitter')}}" target="_blank"><span class="fa fa-twitter"></span></a></li>
-                    @endif
-                    @if(setting('instagram'))
-                        <li><a href="{{setting('instagram')}}"><span class="fa fa-instagram"></span></a></li>
-                    @endif
-                                        @if(setting('telegram'))
-                        <li><a href="{{setting('telegram')}}" target="_blank"><span class="fa fa-telegram"></span></a></li>
-                    @endif
+                    @foreach(['facebook' => 'fa-facebook', 'twitter' => 'fa-twitter', 'instagram' => 'fa-instagram', 'youtube' => 'fa-youtube', 'telegram' => 'fa-telegram'] as $network => $icon)
+                        @php($link = setting($network))
+                        @if($link && $link !== '#')
+                            <li><a href="{{ $link }}" target="_blank" rel="noopener"><span class="fa {{ $icon }}"></span></a></li>
+                        @endif
+                    @endforeach
                 </ul>
             </div>
         </div>

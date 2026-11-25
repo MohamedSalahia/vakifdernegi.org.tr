@@ -39,28 +39,19 @@
                 <!-- CONTACTS INFO -->
                 <div class="col-md-5 col-lg-4" >
 
-                    <!-- General Information -->
+                    @php($assoc = config('association'))
                     <div class="contact-box mb-40">
-                        <h5 class="h5-sm steelblue-color">@lang('site.general_information')</h5>
-                        <p>{{setting(app()->getLocale())['address']}} </p>
-                        <p>@lang('site.phone'): <a href="tel:{{phone_remove_spaces_and_plus()}}" class="blue-color">{{setting('phone')}}</a></p>
-                        <p>@lang('site.email'): <a href="mailto:{{setting('email')}}" class="blue-color">{{setting('email')}}</a></p>
+                        <h5 class="h5-sm steelblue-color">{{ $assoc['legal_name'] }}</h5>
+                        <p>{{ $assoc['address'][app()->getLocale()] ?? $assoc['address']['tr'] }}</p>
+                        <p>@lang('site.phone'): <a href="tel:{{ preg_replace('/\s+/', '', $assoc['phone']) }}" class="blue-color" dir="ltr">{{ $assoc['phone'] }}</a></p>
+                        <p>@lang('site.email'): <a href="mailto:{{ $assoc['email'] }}" class="blue-color">{{ $assoc['email'] }}</a></p>
                     </div>
 
-                    <!-- Patient Experience -->
                     <div class="contact-box mb-40">
-                        <h5 class="h5-sm steelblue-color">@lang('site.patient_experience')</h5>
-                        <p>@lang('site.patient_experience_des')</p>
-
-                        <p>@lang('site.phone'): <a href="tel:{{phone_remove_spaces_and_plus()}}" class="blue-color">{{setting('phone')}}</a></p>
-                        <p>@lang('site.email'): <a href="mailto:{{setting('email')}}" class="blue-color">{{setting('email')}}</a></p>
-                    </div>
-
-                    <!-- Working Hours -->
-                    <div class="contact-box mb-40" >
-                        <h5 class="h5-sm steelblue-color">@lang('site.working_hours')</h5>
-                        <p>@lang('site.working_hours_saturday')</p>
-                        <p>@lang('site.working_hours_friday')</p>
+                        <h5 class="h5-sm steelblue-color">@lang('site.footer_association_title')</h5>
+                        <p>@lang('site.kutuk_no'): <span dir="ltr">{{ $assoc['kutuk_no'] }}</span></p>
+                        <p>@lang('site.vergi_no'): <span dir="ltr">{{ $assoc['vergi_no'] }}</span></p>
+                        <p>@lang('site.mersis_no'): <span dir="ltr">{{ $assoc['mersis_no'] }}</span></p>
                     </div>
 
                 </div>	<!-- END CONTACTS INFO -->
@@ -100,21 +91,22 @@
                                 @endif
                             </div>
 
-                            <!-- Form Select -->
-                            <div  class="col-md-12 col-lg-6 ">
-                                <select id="inlineFormCustomSelect3" name="visit_type" class="custom-select " required>
-                                    <option value="">@lang('site.visit_type')</option>
-                                    <option value="new_visit">@lang('site.new_visit')</option>
-                                    <option value="return">@lang('site.return')</option>
-                                </select>
-                            </div>
-
                             <div  class="col-lg-12">
                                 <input type="text" name="subject" class="form-control " placeholder="@lang('site.subject')" required>
                             </div>
 
                             <div  class="col-lg-12 input-message">
                                 <textarea class="form-control message" name="message" rows="6" placeholder="@lang('site.message')" required></textarea>
+                            </div>
+
+                            <div class="col-lg-12" style="margin:10px 0">
+                                <label style="display:flex;gap:8px;align-items:flex-start;font-weight:normal">
+                                    <input type="checkbox" name="kvkk" value="1" required style="margin-top:5px">
+                                    <span>{!! __('site.contact_kvkk_consent', ['link' => '<a href="'.route('privacy').'" target="_blank">'.__('site.privacy').'</a>']) !!}</span>
+                                </label>
+                                @if ($errors->has('kvkk'))
+                                    <span style="color: red" class="error">{{ $errors->first('kvkk') }}</span>
+                                @endif
                             </div>
 
                             <!-- Contact Form Button -->

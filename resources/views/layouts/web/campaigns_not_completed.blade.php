@@ -16,7 +16,7 @@
                                 @php
                                     $userDonation = \App\Models\UserDonation::query()->where('campaign_id', $campaign->id)->sum('total_price');
 
-                                    $percentage = ($userDonation / $campaign->goal) * 100
+                                    $percentage = $campaign->goal > 0 ? min(100, round(($userDonation / $campaign->goal) * 100)) : 0
 
                                 @endphp
                                 {{--{{dd($percentage)}}--}}
@@ -88,7 +88,7 @@
             $( ".quickDonate_{{$campaign->id}}" ).click(function() {
                 var amount = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
                 if (!amount) {
-                    alert("يرجى ملئ حقل السعر");
+                    alert(@json(__('site.enter_amount_alert')));
                     $(".price_{{$campaign->id}}").addClass("errorInput");
                     $(".price_{{$campaign->id}}").autofocus;
                     return false;
@@ -101,7 +101,7 @@
                 var price = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
 
                 if (!price) {
-                    alert("يرجى ملئ حقل السعر");
+                    alert(@json(__('site.enter_amount_alert')));
                     $(".price_{{$campaign->id}}").addClass("errorInput");
                     $(".price_{{$campaign->id}}").autofocus;
                     return false;
@@ -148,7 +148,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <div class="header-sign-in-up">
-        <a href="{{route('/')}}" class="theme-btn btn-style-one"><span>العودة للصفحة الرئيسية</span></a>
+        <a href="{{route('/')}}" class="theme-btn btn-style-one"><span>@lang('site.return_to_home_page')</span></a>
     </div>
 @endif
 

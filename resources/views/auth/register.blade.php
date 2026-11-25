@@ -4,8 +4,8 @@
 <!--begin::Head-->
 <head><base href="">
     <meta charset="utf-8" />
-    <title>ويبسايتي - لوحة التحكم</title>
-    <meta name="description" content="ويبسايتي - لوحة التحكم" />
+    <title>@lang('site.site_name')</title>
+    <meta name="description" content="@lang('site.site_name')" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link rel="canonical" href="{{env('APP_URL')}}" />
     <!--begin::Fonts-->
@@ -88,7 +88,7 @@
                 <!--end: Aside content-->
                 <!--begin: Aside footer for desktop-->
                 {{--<div class="d-none flex-column-auto d-lg-flex justify-content-between mt-10">
-                    <div class="opacity-70 font-weight-bold text-white">@lang('site.developer') <span class="footer_heart">❤️</span> @lang('site.by') <a class="text-progiom text-hover-progiom" href="#">@lang('site.progiom')</a>@lang('site.all_copy_right')</div>
+                    <div class="opacity-70 font-weight-bold text-white">© {{ date('Y') }} {{ config('association.legal_name') }}</div>
                 </div>--}}
                 <!--end: Aside footer for desktop-->
             </div>
@@ -196,7 +196,7 @@
 
                     <div class="row mb-3 text-center">
                         <hr class="col mr-0 ml-0 mt-2 p-0">
-                        <span class="col"> إختر اللغة </span>
+                        <span class="col">@lang('site.choose_language')</span>
                         <hr class="col mr-0 ml-0 mt-2 p-0">
                     </div>
                     <div class="form-group" style="text-align: center">

@@ -14,7 +14,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // Site settings are edited from the admin panel and saved to storage/app/settings.json,
+        // which is not tracked by git (so admin edits never block deployments).
+        // On first boot it is created from the tracked defaults in storage/settings.json.
+        $runtime = storage_path('app/settings.json');
+        $defaults = storage_path('settings.json');
+        if (!file_exists($runtime) && file_exists($defaults)) {
+            @copy($defaults, $runtime);
+        }
     }
 
     /**

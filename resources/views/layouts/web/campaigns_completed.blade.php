@@ -35,7 +35,7 @@
             $( ".quickDonate_{{$campaign->id}}" ).click(function() {
                 var amount = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
                 if (!amount) {
-                    alert("يرجى ملئ حقل السعر");
+                    alert(@json(__('site.enter_amount_alert')));
                     $(".price_{{$campaign->id}}").addClass("errorInput");
                     $(".price_{{$campaign->id}}").autofocus;
                     return false;
@@ -48,7 +48,7 @@
                 var price = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
 
                 if (!price) {
-                    alert("يرجى ملئ حقل السعر");
+                    alert(@json(__('site.enter_amount_alert')));
                     $(".price_{{$campaign->id}}").addClass("errorInput");
                     $(".price_{{$campaign->id}}").autofocus;
                     return false;

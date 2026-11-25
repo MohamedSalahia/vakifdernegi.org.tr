@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{(LaravelLocalization::getCurrentLocale() == 'ar' ? 'ar' : 'en')}}" dir="{{(LaravelLocalization::getCurrentLocale() == 'ar' ? 'rtl' : 'ltr')}}">
+<html lang="{{ app()->getLocale() }}" dir="{{ LaravelLocalization::getCurrentLocaleDirection() }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -8,7 +8,7 @@
     <meta name="keywords" content="@if(setting(app()->getLocale())['site_keywords']) {{setting(app()->getLocale())['site_keywords']}} @else @lang('site.site_keywords') @endif"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="ar"/>
+    <meta property="og:locale" content="{{ app()->getLocale() == 'ar' ? 'ar_AR' : 'tr_TR' }}"/>
     <meta property="og:site_name" content="@lang('site.app')"/>
     <meta http-equiv="Expires" content="604800">
     <meta http-equiv="Pragma" content="public">

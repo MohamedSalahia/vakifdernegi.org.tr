@@ -56,7 +56,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     <div class="header-sign-in-up">
-                        <a href="{{route('/')}}" class="theme-btn btn-style-one"><span>العودة للصفحة الرئيسية</span></a>
+                        <a href="{{route('/')}}" class="theme-btn btn-style-one"><span>@lang('site.return_to_home_page')</span></a>
                     </div>
                 @endif
             </div>

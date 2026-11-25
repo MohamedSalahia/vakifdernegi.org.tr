@@ -31,11 +31,11 @@
                     @php
                         $userDonation = \App\Models\UserDonation::query()->where('campaign_id', $campaign->id)->sum('total_price');
 
-                        $percentage = ($userDonation / $campaign->goal) * 100
+                        $percentage = $campaign->goal > 0 ? min(100, round(($userDonation / $campaign->goal) * 100)) : 0
 
                     @endphp
-                    <span>حالة الحملة:</span> <br>مكتملة</div>
-                <div class="goal"><span>المبلغ الكلي:</span> <br>{{$campaign->goal}} د.ك</div>
+                    <span>@lang('site.campaign_status'):</span> <br>@lang('site.complete')</div>
+                <div class="goal"><span>@lang('site.total_amount'):</span> <br>{{$campaign->goal}} @lang('site.kuveyt_dinari')</div>
                 <div class="progress-block">
                     <div class="inner-box">
                         <div class="graph-outer">
@@ -102,14 +102,10 @@
                                         </li>
 
                                         <li>
-                                            @if(\Illuminate\Support\Facades\Auth::check())
-                                                <form method="get" action="{{ route('donate.campaign', $campaign->id) }}">
+                                            <form method="get" action="{{ route('donate.campaign', $campaign->id) }}">
                                                     <input type="hidden" name="priceLive" class="priceLive">
                                                     <button class="theme-btn btn-style-two quickDonate_{{$campaign->id}}" type="submit" data-loading-text="Please wait..."><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></button>
                                                 </form>
-                                            @else
-                                                <a href="{{ route('login') }}" class="theme-btn btn-style-two"><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></a>
-                                            @endif
                                         </li>
                                     </ul>
                                 </div>
@@ -152,7 +148,7 @@
         $( ".quickDonate_{{$campaign->id}}" ).click(function() {
                 var amount = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
                 if (!amount) {
-                alert("يرجى ملئ حقل السعر");
+                alert(@json(__('site.enter_amount_alert')));
                 $(".price_{{$campaign->id}}").addClass("errorInput");
                 $(".price_{{$campaign->id}}").autofocus;
                 return false;
@@ -165,7 +161,7 @@
             var price = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
 
             if (!price) {
-                alert("يرجى ملئ حقل السعر");
+                alert(@json(__('site.enter_amount_alert')));
                 $(".price_{{$campaign->id}}").addClass("errorInput");
                 $(".price_{{$campaign->id}}").autofocus;
                 return false;
