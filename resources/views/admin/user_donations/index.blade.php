@@ -51,18 +51,30 @@
                             <!--begin::Button-->
                             <!--end::Button-->
                             <!--begin::Button-->
-                            {{--@if (auth()->user()->hasPermission('delete_user_donations'))
-                                <form method="post" action="{{ route('admin.user_donations.bulk_delete') }}" style="display: inline-block;">
-                                    @csrf
-                                    @method('delete')
-                                    <input type="hidden" name="record_ids" id="record-ids">
-                                    <button type="submit" class="btn btn-danger" id="bulk-delete" disabled="true"><i class="fa fa-trash"></i> @lang('site.bulk_delete')</button>
-                                </form><!-- end of form -->
-                            @endif--}}
+                            
                             <!--end::Button-->
                         </div>
                     </div>
                     <div class="card-body">
+                        <div class="row mb-5">
+                            @foreach(['pending' => 'warning', 'confirmed' => 'success', 'cancelled' => 'secondary'] as $st => $color)
+                                <div class="col-md-4 mb-3">
+                                    <div class="border rounded p-4 bg-light-{{ $color }}">
+                                        <div class="font-weight-bold text-{{ $color }}">@lang('site.donation_status_' . $st)</div>
+                                        <div class="font-size-h4 font-weight-bolder">{{ optional($counts->get($st))->total ?? 0 }}</div>
+                                        <div dir="ltr" class="text-muted">{{ number_format(optional($counts->get($st))->amount ?? 0, 2, ',', '.') }} TL</div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="form-group col-md-3 px-0">
+                            <select id="status-filter" class="form-control">
+                                <option value="">@lang('site.all_statuses')</option>
+                                <option value="pending" selected>@lang('site.donation_status_pending')</option>
+                                <option value="confirmed">@lang('site.donation_status_confirmed')</option>
+                                <option value="cancelled">@lang('site.donation_status_cancelled')</option>
+                            </select>
+                        </div>
                         {{--<div class="form-group col-3">
                             <input type="text" id="data-table-search" class="form-control" autofocus placeholder="@lang('site.search')">
                         </div>--}}
@@ -70,18 +82,11 @@
                         <table class="table table-bordered table-hover table-checkable sortable" id="kt_datatable" style="margin-top: 13px !important">
                             <thead>
                             <tr>
-                                <th>
-                                    <label class="checkbox">
-                                        <input type="checkbox" id="select_all" name="select_all">
-                                        <span></span>
-                                    </label>
-                                </th>
-                                <th>@lang('site.user_name')</th>
-                                <th>@lang('site.campaign_name')</th>
+                                <th>@lang('site.reference_no')</th>
+                                <th>@lang('site.full_name')</th>
+                                <th>@lang('site.donation_items')</th>
                                 <th>@lang('site.price')</th>
-                                <th>@lang('site.status')</th>
-                                {{--<th>@lang('site.quantity')</th>--}}
-                                {{--<th>@lang('site.total_price')</th>--}}
+                                <th>@lang('site.donation_status')</th>
                                 <th>@lang('site.donation_date')</th>
                                 <th>@lang('site.actions')</th>
                             </tr>
@@ -120,18 +125,18 @@
             },
             ajax: {
                 url: '{{route('admin.user_donations.data')}}',
+                data: function (d) { d.status = $('#status-filter').val(); },
             },
             columns: [
-                {data: 'record_select', name: 'record_select', searchable: false, sortable: false},
-                {data: 'user.name', name: 'user.name'},
-                {data: 'campaign.name', name: 'campaign.name', searchable: false,sortable: false},
-                {data: 'amt', name: 'amt', searchable: false,sortable: false},
-                {data: 'status', name: 'status', searchable: false,sortable: false},
-                /*{data: 'quantity', name: 'quantity', searchable: false,sortable: false},*/
-                /*{data: 'total_price', name: 'total_price', searchable: false,sortable: false},*/
-                {data: 'created_at', name: 'created_at'},
+                {data: 'reference', name: 'reference'},
+                {data: 'donor_name', name: 'donor_name'},
+                {data: 'items_label', name: 'items_label', searchable: false, sortable: false},
+                {data: 'amount', name: 'amount', searchable: false},
+                {data: 'status_badge', name: 'status', searchable: false},
+                {data: 'created_at', name: 'created_at', searchable: false},
                 {data: 'actions', name: 'actions', searchable: false, sortable: false}
             ],
+            order: [[5, 'desc']],
             //order: [[4, 'desc']],
             drawCallback: function (settings) {
                 $('.record__select').prop('checked', false);
@@ -140,6 +145,8 @@
                 $('#bulk-delete').attr('disabled', true);
             },
         });
+
+        $('#status-filter').on('change', function () { user_donationsTable.draw(); });
 
         $('#data-table-search').keyup(function () {
             user_donationsTable.search(this.value).draw();

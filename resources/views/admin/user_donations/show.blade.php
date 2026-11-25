@@ -1,97 +1,96 @@
 @extends('layouts.admin.app')
-
 @section('content')
-
+    @php($colors = ['pending' => 'warning', 'confirmed' => 'success', 'cancelled' => 'dark'])
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-        <!--begin::Subheader-->
         <div class="subheader py-2 py-lg-6 subheader-solid" id="kt_subheader">
             <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-                <!--begin::Info-->
-                <div class="d-flex align-items-center flex-wrap mr-1">
-                    <!--begin::Page Heading-->
-                    <div class="d-flex align-items-baseline flex-wrap mr-5">
-                        <!--begin::Page Title-->
-                        <h5 class="text-dark font-weight-bold my-1 mr-5">@lang('site.user_donations')</h5>
-                        <!--end::Page Title-->
-                        <!--begin::Breadcrumb-->
-                        <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
-                            <li class="breadcrumb-item text-muted">
-                                <a href="{{route('admin.user_donations.index')}}" class="text-muted">@lang('site.user_donations')</a>
-                            </li>
-                            <li class="breadcrumb-item text-muted">
-                                <a href="javascript:;" class="text-muted">@lang('site.show')</a>
-                            </li>
-                        </ul>
-                        <!--end::Breadcrumb-->
-                    </div>
-                    <!--end::Page Heading-->
+                <div class="d-flex align-items-center flex-wrap mr-2">
+                    <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">@lang('site.user_donations')</h5>
+                    <div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+                    <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm mr-4">
+                        <li class="breadcrumb-item"><a href="{{ route('admin.user_donations.index') }}" class="text-muted">@lang('site.user_donations')</a></li>
+                        <li class="breadcrumb-item"><span class="text-muted" dir="ltr">{{ $donation->reference }}</span></li>
+                    </ul>
                 </div>
-                <!--end::Info-->
             </div>
         </div>
-        <!--end::Subheader-->
-        <!--begin::Entry-->
+
         <div class="d-flex flex-column-fluid">
-            <!--begin::Container-->
             <div class="container">
-
-            <!--begin::Card-->
-                <div class="card card-custom gutter-b example example-compact" data-card="true">
-
-                    <!--begin::Form-->
-                        <div class="card-body">
-                            <div class="row">
-                                {{--name--}}
-                                <div class="form-group col-lg-6">
-                                    <label>@lang('site.name')</label>
-                                    <input type="text" class="form-control" placeholder="@lang('site.name')" value="{{ $knetTransaction->udf2 }}" disabled/>
-                                </div>
-                                {{--email--}}
-                                <div class="form-group col-lg-6">
-                                    <label>@lang('site.email')</label>
-                                    <input type="text" class="form-control"  placeholder="@lang('site.email')" value="{{ $knetTransaction->udf3 }}" disabled/>
-                                </div>
-
-                                {{--payment ID--}}
-                                <div class="form-group col-lg-6">
-                                    <label>@lang('site.payment_id')</label>
-                                    <input type="text" class="form-control"  placeholder="@lang('site.payment_id')" value="{{ $knetTransaction->paymentid }}" disabled/>
-                                </div>
-                                {{--price--}}
-                                <div class="form-group col-lg-6">
-                                    <label>@lang('site.price')</label>
-                                    <input type="text" class="form-control" placeholder="@lang('site.price')" value="{{ $knetTransaction->amt }}" disabled/>
-                                </div>
-                                @if($knetTransaction->auth_resp_code == 0)
-                                    <div class="form-group col-lg-6">
-                                        <label>@lang('site.status')</label>
-                                        <input style="background-color: #87C28D;" type="text" class="form-control" placeholder="@lang('site.status')" value="دفع ناجح" disabled/>
-                                    </div>
-                                @else
-                                    <div class="form-group col-lg-6">
-                                        <label>@lang('site.status')</label>
-                                        <input style="background-color: #ff000070;" type="text" class="form-control" placeholder="@lang('site.status')" value="دفع فاشل" disabled/>
-                                    </div>
-                                @endif
-                                {{--campaign--}}
-                                <div class="form-group col-lg-6">
-                                    <label>@lang('site.campaign_name')</label>
-                                    <input type="text" class="form-control" placeholder="@lang('site.campaign_name')" value="{{ $knetTransaction->campaign->name }}" disabled/>
+                @include('admin.partials._session')
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="card card-custom gutter-b">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <h3 class="card-label" dir="ltr">{{ $donation->reference }}</h3>
+                                    <span class="label label-light-{{ $colors[$donation->status] ?? 'dark' }} label-lg label-inline label-bold">@lang('site.donation_status_' . $donation->status)</span>
                                 </div>
                             </div>
+                            <div class="card-body">
+                                <table class="table table-borderless">
+                                    <tr><th style="width:40%">@lang('site.full_name')</th><td>{{ $donation->donor_name }}</td></tr>
+                                    <tr><th>@lang('site.email')</th><td>@if($donation->donor_email)<a href="mailto:{{ $donation->donor_email }}">{{ $donation->donor_email }}</a>@else — @endif</td></tr>
+                                    <tr><th>@lang('site.phone')</th><td dir="ltr">{{ $donation->donor_phone ?: '—' }}</td></tr>
+                                    <tr><th>@lang('site.payment_method')</th><td>@lang('site.payment_method_' . $donation->payment_method)</td></tr>
+                                    <tr><th>@lang('site.donation_date')</th><td dir="ltr">{{ $donation->created_at->format('Y-m-d H:i') }}</td></tr>
+                                    <tr><th>@lang('site.kvkk_accepted_at')</th><td dir="ltr">{{ optional($donation->kvkk_accepted_at)->format('Y-m-d H:i') ?: '—' }}</td></tr>
+                                    @if($donation->confirmed_at)
+                                        <tr><th>@lang('site.confirmed_at')</th><td dir="ltr">{{ $donation->confirmed_at->format('Y-m-d H:i') }} ({{ optional($donation->confirmer)->name }})</td></tr>
+                                    @endif
+                                    @if($donation->cancelled_at)
+                                        <tr><th>@lang('site.cancelled_at')</th><td dir="ltr">{{ $donation->cancelled_at->format('Y-m-d H:i') }}</td></tr>
+                                    @endif
+                                </table>
+
+                                <h5 class="mt-6 mb-3">@lang('site.donation_items')</h5>
+                                <table class="table table-bordered">
+                                    <thead><tr><th>@lang('site.campaign_name')</th><th>@lang('site.donation_type')</th><th>@lang('site.price')</th></tr></thead>
+                                    <tbody>
+                                    @foreach($donation->items as $item)
+                                        <tr>
+                                            <td>{{ $item->label }}</td>
+                                            <td>{{ \App\Http\Controllers\DonationController::typeLabel($item->donation_type) }}</td>
+                                            <td dir="ltr">{{ number_format($item->amount, 2, ',', '.') }} TL</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                    <tfoot><tr><th colspan="2">@lang('site.total')</th><th dir="ltr">{{ number_format($donation->amount, 2, ',', '.') }} TL</th></tr></tfoot>
+                                </table>
+                            </div>
                         </div>
-                    <!--end::Form-->
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="card card-custom gutter-b">
+                            <div class="card-header"><div class="card-title"><h3 class="card-label">@lang('site.actions')</h3></div></div>
+                            <div class="card-body">
+                                @if($donation->status === \App\Models\Donation::PENDING && auth()->user()->hasPermission('update_user_donations'))
+                                    <p class="text-muted">@lang('site.confirm_donation_help', ['ref' => $donation->reference])</p>
+                                    <form method="POST" action="{{ route('admin.user_donations.confirm', $donation) }}" class="mb-4"
+                                          onsubmit="return confirm(@json(__('site.confirm_donation_question')))">
+                                        @csrf
+                                        <textarea name="admin_note" class="form-control mb-3" rows="2" placeholder="@lang('site.admin_note')">{{ $donation->admin_note }}</textarea>
+                                        <button type="submit" class="btn btn-success btn-block">@lang('site.confirm_donation')</button>
+                                    </form>
+                                    <form method="POST" action="{{ route('admin.user_donations.cancel', $donation) }}"
+                                          onsubmit="return confirm(@json(__('site.cancel_donation_question')))">
+                                        @csrf
+                                        <button type="submit" class="btn btn-outline-danger btn-block">@lang('site.cancel_donation')</button>
+                                    </form>
+                                @else
+                                    <form method="POST" action="{{ route('admin.user_donations.note', $donation) }}">
+                                        @csrf
+                                        <label>@lang('site.admin_note')</label>
+                                        <textarea name="admin_note" class="form-control mb-3" rows="3">{{ $donation->admin_note }}</textarea>
+                                        <button type="submit" class="btn btn-primary">@lang('site.save')</button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!--end::Card-->
             </div>
-            <!--end::Container-->
         </div>
-        <!--end::Entry-->
     </div>
-
 @endsection
-
-@push('scripts')
-    @include('layouts.admin.validate')
-    <script src="{{asset('admin/assets/js/pages/crud/file-upload/image-input.js?v=7.2.9')}}"></script>
-@endpush

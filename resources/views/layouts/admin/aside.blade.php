@@ -479,14 +479,6 @@
                                         <span class="menu-text">@lang('site.show_all')</span>
                                     </a>
                                 </li>
-                                <li class="menu-item" aria-haspopup="true">
-                                    <a href="{{route('admin.user_donations.create')}}" class="menu-link">
-                                        <i class="menu-bullet menu-bullet-dot">
-                                            <span></span>
-                                        </i>
-                                        <span class="menu-text">@lang('site.add_new')</span>
-                                    </a>
-                                </li>
                             </ul>
                         </div>
                     </li>

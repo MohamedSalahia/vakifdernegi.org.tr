@@ -2,20 +2,7 @@
 @section('page_title')@lang('site.donation_checkout')@endsection
 
 @push('styles')
-<style>
-    .donation-checkout { padding: 70px 0; }
-    .donation-checkout .dc-card { background: #fff; border: 1px solid #e6e6e6; border-radius: 8px; padding: 28px; margin-bottom: 30px; }
-    .donation-checkout h3 { font-size: 22px; margin-bottom: 20px; }
-    .donation-checkout .dc-row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px dashed #e6e6e6; }
-    .donation-checkout .dc-row:last-child { border-bottom: 0; }
-    .donation-checkout .dc-total { font-size: 22px; font-weight: 700; }
-    .donation-checkout .dc-ref { display: inline-block; font-family: monospace; font-size: 20px; letter-spacing: 1px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px; padding: 6px 14px; }
-    .donation-checkout .dc-note { background: #fff8e5; border: 1px solid #f1dc9c; border-radius: 6px; padding: 12px 16px; margin: 16px 0; }
-    .donation-checkout .dc-bank { margin-top: 16px; }
-    .donation-checkout .dc-bank table { width: 100%; }
-    .donation-checkout label.dc-consent { display: flex; gap: 10px; align-items: flex-start; font-weight: normal; margin: 18px 0; }
-    .donation-checkout label.dc-consent input { margin-top: 5px; }
-</style>
+    @include('web.partials.donation_styles')
 @endpush
 
 @section('content')
@@ -42,86 +29,80 @@
                         <div class="dc-row"><span>@lang('site.donation_type')</span><strong>{{ $donation['type'] }}</strong></div>
                         @foreach($donation['items'] as $item)
                             <div class="dc-row">
-                                <span>{{ $item['name'] }}</span>
-                                <span>{{ number_format($item['amount'], 2) }} @lang('site.kuveyt_dinari')</span>
+                                <span>{{ $item['label'] }}</span>
+                                <span dir="ltr">{{ number_format($item['amount'], 2, ',', '.') }} TL</span>
                             </div>
                         @endforeach
                         <div class="dc-row dc-total">
                             <span>@lang('site.total')</span>
-                            <span>{{ number_format($donation['amount'], 2) }} @lang('site.kuveyt_dinari')</span>
+                            <span dir="ltr">{{ number_format($donation['amount'], 2, ',', '.') }} TL</span>
                         </div>
-                        @if($bankTransferEnabled)
-                        <div class="dc-row">
-                            <span>@lang('site.reference_no')</span>
-                            <span class="dc-ref">{{ $donation['reference'] }}</span>
-                        </div>
-                        @endif
+                        <p class="dc-small">@lang('site.donation_recipient', ['name' => config('association.legal_name')])</p>
                     </div>
                 </div>
 
-                {{-- Payment --}}
+                {{-- Donor + payment --}}
                 <div class="col-lg-7 col-md-12">
                     <div class="dc-card">
-                        <h3>@lang('site.payment_method')</h3>
-
-                        <label class="dc-consent">
-                            <input type="checkbox" id="dc-agree">
-                            <span>
-                                @lang('site.agree_policies')
-                                <a href="{{ route('terms-of-use') }}" target="_blank">@lang('site.term')</a>{{ app()->getLocale() == 'ar' ? '،' : ',' }}
-                                <a href="{{ route('donation-policy') }}" target="_blank">@lang('site.donation_policy')</a>{{ app()->getLocale() == 'ar' ? '،' : ',' }}
-                                <a href="{{ route('delivery-and-refund-policy') }}" target="_blank">@lang('site.delivery-and-refund-policy')</a>
-                                @lang('site.and')
-                                <a href="{{ route('privacy') }}" target="_blank">@lang('site.privacy')</a>.
-                            </span>
-                        </label>
-
-                        <div id="dc-payment" style="display:none">
-                            @if($cardPaymentEnabled)
-                                {{-- Card gateway form goes here once a provider is integrated. --}}
-                                <button type="button" class="theme-btn btn-style-one" disabled><span>@lang('site.pay_by_card')</span></button>
-                            @else
-                                <div class="dc-note">@lang('site.card_payment_soon')</div>
-                            @endif
-
-                            @if($bankTransferEnabled)
-                            <h4 style="margin-top:20px">@lang('site.pay_by_bank_transfer')</h4>
-                            <p>@lang('site.bank_transfer_note')</p>
-                            <p><span class="dc-ref">{{ $donation['reference'] }}</span></p>
-
-                            @if($bankPage)
-                                <div class="dc-bank">{!! $bankPage->description !!}</div>
-                            @else
-                                <p><a href="{{ route('bank_accounts') }}">@lang('site.bank_accounts')</a></p>
-                            @endif
-
-                            @else
-                                <div class="dc-note" style="margin-top:16px">
-                                    @lang('site.bank_info_unavailable')
-                                    <br><a href="tel:{{ phone_remove_spaces_and_plus() }}">{{ setting('phone') }}</a>
-                                    @if(setting('email')) · <a href="mailto:{{ setting('email') }}">{{ setting('email') }}</a>@endif
+                        @if(!$bankTransferEnabled && !$cardPaymentEnabled)
+                            <h3>@lang('site.payment_method')</h3>
+                            <div class="dc-note">
+                                @lang('site.bank_info_unavailable')
+                                <br><a href="tel:{{ preg_replace('/\s+/', '', config('association.phone')) }}" dir="ltr">{{ config('association.phone') }}</a>
+                                · <a href="mailto:{{ config('association.email') }}">{{ config('association.email') }}</a>
+                            </div>
+                        @else
+                            <h3>@lang('site.donor_info')</h3>
+                            <form method="POST" action="{{ route('donate.store') }}" id="dc-form">
+                                @csrf
+                                <div class="dc-field">
+                                    <label for="donor_name">@lang('site.full_name') *</label>
+                                    <input type="text" id="donor_name" name="donor_name" class="form-control" maxlength="100" required
+                                           value="{{ old('donor_name', auth()->user()->name ?? '') }}">
+                                    @error('donor_name')<span class="dc-error">{{ $message }}</span>@enderror
                                 </div>
-                            @endif
+                                <div class="dc-field">
+                                    <label for="donor_email">@lang('site.email')</label>
+                                    <input type="email" id="donor_email" name="donor_email" class="form-control" maxlength="150"
+                                           value="{{ old('donor_email', auth()->user()->email ?? '') }}">
+                                    <small>@lang('site.donor_email_hint')</small>
+                                    @error('donor_email')<span class="dc-error">{{ $message }}</span>@enderror
+                                </div>
+                                <div class="dc-field">
+                                    <label for="donor_phone">@lang('site.phone')</label>
+                                    <input type="tel" id="donor_phone" name="donor_phone" class="form-control" maxlength="30" dir="ltr"
+                                           value="{{ old('donor_phone', auth()->user()->phone ?? '') }}">
+                                    @error('donor_phone')<span class="dc-error">{{ $message }}</span>@enderror
+                                </div>
 
-                            @if($bankTransferEnabled)
-                            <p style="margin-top:16px">@lang('site.contact_after_transfer')
-                                <a href="{{ route('contact_us') }}">@lang('site.contact_us')</a>
-                            </p>
-                            @endif
-                        </div>
+                                <h3 style="margin-top:24px">@lang('site.payment_method')</h3>
+                                @if($bankTransferEnabled)
+                                    <label class="dc-method"><input type="radio" name="payment_method" value="bank_transfer" checked> @lang('site.pay_by_bank_transfer')</label>
+                                @endif
+                                @unless($cardPaymentEnabled)
+                                    <div class="dc-note">@lang('site.card_payment_soon')</div>
+                                @endunless
+
+                                <label class="dc-consent">
+                                    <input type="checkbox" name="kvkk" value="1" required {{ old('kvkk') ? 'checked' : '' }}>
+                                    <span>
+                                        @lang('site.agree_policies')
+                                        <a href="{{ route('donation-policy') }}" target="_blank">@lang('site.donation_policy')</a>{{ app()->getLocale() == 'ar' ? '،' : ',' }}
+                                        <a href="{{ route('delivery-and-refund-policy') }}" target="_blank">@lang('site.delivery-and-refund-policy')</a>{{ app()->getLocale() == 'ar' ? '،' : ',' }}
+                                        <a href="{{ route('terms-of-use') }}" target="_blank">@lang('site.term')</a>
+                                        @lang('site.and')
+                                        <a href="{{ route('privacy') }}" target="_blank">@lang('site.privacy')</a>.
+                                    </span>
+                                </label>
+                                @error('kvkk')<span class="dc-error">{{ $message }}</span>@enderror
+
+                                <button type="submit" class="theme-btn btn-style-one"><span>@lang('site.create_donation')</span></button>
+                                <p class="dc-small" style="margin-top:12px">@lang('site.create_donation_hint')</p>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </section>
 @endsection
-
-@push('scripts')
-<script>
-    (function () {
-        var agree = document.getElementById('dc-agree');
-        var box = document.getElementById('dc-payment');
-        agree.addEventListener('change', function () { box.style.display = agree.checked ? 'block' : 'none'; });
-    })();
-</script>
-@endpush

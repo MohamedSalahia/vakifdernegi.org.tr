@@ -86,8 +86,11 @@ Route::prefix(LaravelLocalization::setLocale())->middleware([
 
             //user donations routes
             Route::get('/user_donations/data', 'UserDonationController@data')->name('user_donations.data');
-            Route::delete('/user_donations/bulk_delete', 'UserDonationController@bulkDelete')->name('user_donations.bulk_delete');
-            Route::resource('user_donations', 'UserDonationController');
+            Route::get('/user_donations', 'UserDonationController@index')->name('user_donations.index');
+            Route::get('/user_donations/{donation}', 'UserDonationController@show')->name('user_donations.show');
+            Route::post('/user_donations/{donation}/confirm', 'UserDonationController@confirm')->name('user_donations.confirm');
+            Route::post('/user_donations/{donation}/cancel', 'UserDonationController@cancel')->name('user_donations.cancel');
+            Route::post('/user_donations/{donation}/note', 'UserDonationController@note')->name('user_donations.note');
 
             //page routes
             Route::get('/pages/data', 'PageController@data')->name('pages.data');
@@ -116,7 +119,6 @@ Route::prefix(LaravelLocalization::setLocale())->middleware([
 
             //
 
-            Route::get('/knet_transactions/{knetTransaction}', 'UserDonationController@show')->name('knet_transactions.show');
 
 
             //FCM routes

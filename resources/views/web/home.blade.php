@@ -79,7 +79,7 @@
                                         <div class="info-box">
                                             <div class="raised">
                                                 @php
-                                                    $userDonation = \App\Models\UserDonation::query()->where('campaign_id', $campaign->id)->sum('total_price');
+                                                    $userDonation = \App\Models\Donation::confirmedTotalForCampaign($campaign->id);
 
                                                     $percentage = $campaign->goal > 0 ? min(100, round(($userDonation / $campaign->goal) * 100)) : 0
 
@@ -268,7 +268,7 @@
                                         <div class="info-box">
                                             <div class="raised">
                                                 @php
-                                                    $userDonation = \App\Models\UserDonation::query()->where('campaign_id', $campaign->id)->sum('total_price');
+                                                    $userDonation = \App\Models\Donation::confirmedTotalForCampaign($campaign->id);
 
                                                     $percentage = $campaign->goal > 0 ? min(100, round(($userDonation / $campaign->goal) * 100)) : 0
 

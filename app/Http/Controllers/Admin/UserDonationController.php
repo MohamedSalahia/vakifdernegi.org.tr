@@ -3,138 +3,111 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\UserDonation;
-use Asciisd\Knet\KnetTransaction;
+use App\Mail\DonationConfirmed;
+use App\Models\Donation;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\DataTables;
 
+/**
+ * Admin screen for donations made on the site.
+ * An admin confirms a donation once the transfer appears in the bank account
+ * (the donor then receives a confirmation e-mail), or cancels it.
+ */
 class UserDonationController extends Controller
 {
     public function __construct()
     {
-
-        $this->middleware('permission:read_user_donations')->only(['index']);
-        $this->middleware('permission:create_user_donations')->only(['create', 'store']);
-        $this->middleware('permission:update_user_donations')->only(['edit', 'update']);
-        $this->middleware('permission:delete_user_donations')->only(['delete', 'bulk_delete']);
-
-    }// end of __construct
+        $this->middleware('permission:read_user_donations')->only(['index', 'data', 'show']);
+        $this->middleware('permission:update_user_donations')->only(['confirm', 'cancel', 'note']);
+    }
 
     public function index()
     {
+        $counts = Donation::query()->selectRaw('status, count(*) as total, sum(amount) as amount')->groupBy('status')->get()->keyBy('status');
 
-        return view('admin.user_donations.index');
+        return view('admin.user_donations.index', compact('counts'));
+    }
 
-    }// end of index
-
-    public function data()
+    public function data(Request $request)
     {
-        //$user_donations = UserDonation::query()->with(['campaign', 'user'])->orderBy('created_at', 'desc')->select('user_donations.*');
+        $donations = Donation::query()->with('items')
+            ->when(in_array($request->status, [Donation::PENDING, Donation::CONFIRMED, Donation::CANCELLED], true),
+                fn ($q) => $q->where('status', $request->status))
+            ->select('donations.*');
 
-        $knet_transactions = KnetTransaction::query()->whereNotNull('paymentid')->with(['campaign', 'user'])->orderBy('created_at', 'desc')->select('knet_transactions.*');
-
-
-        //dd($user_donations);
-        return DataTables::of($knet_transactions)
-            ->addColumn('record_select', 'admin.user_donations.data_table.record_select')
+        return DataTables::of($donations)
+            ->addColumn('items_label', fn (Donation $d) => e($d->items->pluck('label')->implode(', ')))
+            ->editColumn('amount', fn (Donation $d) => number_format($d->amount, 2, ',', '.') . ' TL')
+            ->editColumn('created_at', fn (Donation $d) => $d->created_at->format('Y-m-d H:i'))
+            ->addColumn('status_badge', 'admin.user_donations.data_table.status')
             ->addColumn('actions', 'admin.user_donations.data_table.actions')
-            ->addColumn('status', 'admin.user_donations.data_table.status')
-            ->rawColumns(['record_select', 'actions', 'status'])
+            ->rawColumns(['status_badge', 'actions'])
             ->toJson();
+    }
 
-    }// end of data
-
-    public function create()
+    public function show(Donation $donation)
     {
+        $donation->load(['items.campaign', 'user', 'confirmer']);
 
-        $user_donations = UserDonation::all();
-        return view('admin.user_donations.create', compact('user_donations'));
+        return view('admin.user_donations.show', compact('donation'));
+    }
 
-    }// end of create
-
-    public function store(Request $request)
+    public function confirm(Request $request, Donation $donation)
     {
+        $request->validate(['admin_note' => 'nullable|string|max:2000']);
 
-        $rules = [];
+        if ($donation->status !== Donation::PENDING) {
+            return back()->with('error', __('site.donation_not_pending'));
+        }
 
-        foreach (config('translatable.locales') as $locale) {
+        $donation->update([
+            'status' => Donation::CONFIRMED,
+            'confirmed_at' => now(),
+            'confirmed_by' => auth()->id(),
+            'admin_note' => $request->admin_note ?: $donation->admin_note,
+        ]);
 
-            $rules += [$locale . '.name' => ['required', Rule::unique('category_translations', 'name')]];
+        if ($donation->donor_email) {
+            try {
+                Mail::to($donation->donor_email)->send(new DonationConfirmed($donation->fresh('items')));
+            } catch (\Throwable $e) {
+                Log::warning('Donation confirmation email failed', ['reference' => $donation->reference, 'error' => $e->getMessage()]);
+                session()->flash('error', __('site.donation_email_failed'));
+            }
+        }
 
-        }//end of for each
+        session()->flash('success', __('site.donation_confirmed_admin'));
 
-        $request->validate($rules);
-        //$request->validated();
+        return redirect()->route('admin.user_donations.show', $donation);
+    }
 
-        UserDonation::create($request->all());
-
-        session()->flash('success', __('site.added_successfully'));
-        return redirect()->route('admin.user_donations.index');
-
-    }// end of store
-
-    public function edit(UserDonation $userDonation)
+    public function cancel(Request $request, Donation $donation)
     {
-        $user_donations = UserDonation::where('id', '!=', $userDonation->id)->get();
-        return view('admin.user_donations.edit', compact('userDonation', 'user_donations'));
+        $request->validate(['admin_note' => 'nullable|string|max:2000']);
 
-    }// end of edit
+        if ($donation->status !== Donation::PENDING) {
+            return back()->with('error', __('site.donation_not_pending'));
+        }
 
-    public function update(Request $request, UserDonation $userDonation)
+        $donation->update([
+            'status' => Donation::CANCELLED,
+            'cancelled_at' => now(),
+            'admin_note' => $request->admin_note ?: $donation->admin_note,
+        ]);
+
+        session()->flash('success', __('site.donation_cancelled_admin'));
+
+        return redirect()->route('admin.user_donations.show', $donation);
+    }
+
+    public function note(Request $request, Donation $donation)
     {
-        dd('dsadas');
-        $rules = [];
-
-        foreach (config('translatable.locales') as $locale) {
-
-            $rules += [$locale . '.name' => ['required']];
-
-        }//end of for each
-
-        $request->validate($rules);
-
-        $userDonation->update($request->all());
-
+        $data = $request->validate(['admin_note' => 'nullable|string|max:2000']);
+        $donation->update($data);
         session()->flash('success', __('site.updated_successfully'));
-        return redirect()->route('admin.user_donations.index');
 
-    }// end of update
-
-    public function destroy(UserDonation $category)
-    {
-
-        $this->delete($category);
-        session()->flash('success', __('site.deleted_successfully'));
-        return response(__('site.deleted_successfully'));
-
-    }// end of destroy
-
-    public function bulkDelete()
-    {
-        foreach (json_decode(request()->record_ids) as $recordId) {
-
-            $category = UserDonation::FindOrFail($recordId);
-
-            $this->delete($category);
-
-        }//end of for each
-
-        session()->flash('success', __('site.deleted_successfully'));
-        return response(__('site.deleted_successfully'));
-
-    }// end of bulkDelete
-
-    private function delete(UserDonation $category)
-    {
-        $category->delete();
-
-    }// end of delete
-
-    public function show(KnetTransaction $knetTransaction)
-    {
-        //dd($knetTransaction);
-
-        return view('admin.user_donations.show', compact('knetTransaction'));
+        return redirect()->route('admin.user_donations.show', $donation);
     }
 }

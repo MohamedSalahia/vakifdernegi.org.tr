@@ -1,5 +1,2 @@
-@if($auth_resp_code == 0)
-    <span class="label label-light-success label-lg label-inline label-bold">دفع ناجح</span>
-@else
-    <span class="label label-light-danger label-lg label-inline label-bold">دفع فاشل</span>
-@endif
+@php($colors = ['pending' => 'warning', 'confirmed' => 'success', 'cancelled' => 'dark'])
+<span class="label label-light-{{ $colors[$status] ?? 'dark' }} label-lg label-inline label-bold">@lang('site.donation_status_' . $status)</span>

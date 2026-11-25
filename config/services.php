@@ -31,12 +31,6 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'knet' => [
-        'base_url' => env('KNET_BASE_URL', 'https://kpay.com.kw/'),
-        'tran_portal_id' => env('KENT_TRANSPORT_ID'),
-        'tran_portal_password' => env('KENT_TRANSPORT_PASSWORD'),
-        'terminal_resource_key' => env('KENT_RESOURCE_KEY'),
-    ],
 
 
 ];
