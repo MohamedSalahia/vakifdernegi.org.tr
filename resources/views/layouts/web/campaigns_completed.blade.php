@@ -35,7 +35,7 @@
             $( ".quickDonate_{{$campaign->id}}" ).click(function() {
                 var amount = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
                 if (!amount) {
-                    alert(@json(__('site.enter_amount_alert')));
+                    vakifToast(@json(__('site.enter_amount_alert')), 'warning');
                     $(".price_{{$campaign->id}}").addClass("errorInput");
                     $(".price_{{$campaign->id}}").autofocus;
                     return false;

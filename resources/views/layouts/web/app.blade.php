@@ -48,7 +48,7 @@
     <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script><![endif]-->
     <!--[if lt IE 9]><script src="{{asset('web/js/respond.js')}}"></script><![endif]-->
 
-    <link href="{{asset('web/css/custom.css?id=3')}}" rel="stylesheet">
+    <link href="{{asset('web/css/custom.css?id=4')}}" rel="stylesheet">
 
     @stack('styles')
 </head>
@@ -96,14 +96,30 @@
 <script src="{{asset('web/js/knob.js')}}"></script>
 <!-- Custom JS -->
 <script src="{{asset('web/js/script'.(app()->getLocale() == 'ar' ? '_rtl': '').'.js')}}"></script>
+{{-- Toast notifications: vakifToast(text, 'success' | 'error' | 'warning') --}}
+<script>
+    window.vakifToast = function (text, type) {
+        type = ['success', 'error', 'warning'].indexOf(type) >= 0 ? type : 'success';
+        var icons = { success: 'fa-check', error: 'fa-times', warning: 'fa-exclamation' };
+        var box = document.querySelector('.vk-toasts');
+        if (!box) { box = document.createElement('div'); box.className = 'vk-toasts'; box.setAttribute('aria-live', 'polite'); document.body.appendChild(box); }
+        var el = document.createElement('div');
+        el.className = 'vk-toast vk-toast--' + type;
+        el.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        el.innerHTML = '<span class="vk-toast__icon"><span class="fa ' + icons[type] + '"></span></span><span class="vk-toast__text"></span><button type="button" class="vk-toast__close" aria-label="Close">&times;</button>';
+        el.querySelector('.vk-toast__text').textContent = text;
+        function hide() { el.classList.remove('vk-show'); setTimeout(function () { el.remove(); }, 250); }
+        el.querySelector('.vk-toast__close').addEventListener('click', hide);
+        box.appendChild(el);
+        requestAnimationFrame(function () { el.classList.add('vk-show'); });
+        setTimeout(hide, type === 'error' ? 6000 : 3500);
+    };
+</script>
 {{-- Donation cart helper (POST + CSRF) --}}
 <script>
     window.vakifCart = (function () {
         var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        function notify(text, type) {
-            if (window.Noty) { new Noty({ text: text, type: type || 'alert', timeout: 2500, killer: true, theme: 'semanticui', layout: 'bottomLeft' }).show(); }
-            else { alert(text); }
-        }
+        function notify(text, type) { window.vakifToast(text, type); }
         function setCount(n) {
             document.querySelectorAll('.item-count').forEach(function (el) { el.textContent = n; el.style.display = n > 0 ? '' : 'none'; });
         }
@@ -122,7 +138,7 @@
                         throw new Error(msg);
                     }
                     if (typeof body.count !== 'undefined') { setCount(body.count); }
-                    if (body.message) { notify(body.message); }
+                    if (body.message) { notify(body.message, 'success'); }
                     return body;
                 });
             });
@@ -155,7 +171,10 @@
     })();
 </script>
 @if(session('error'))
-<script>new Noty({ text: @json(session('error')), type: 'error', timeout: 4000, killer: true }).show();</script>
+<script>vakifToast(@json(session('error')), 'error');</script>
+@endif
+@if(session('success'))
+<script>vakifToast(@json(session('success')), 'success');</script>
 @endif
 </body>
 </html>
