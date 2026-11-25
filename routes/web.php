@@ -7,79 +7,28 @@ use App\Models\Category;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
 
-Route::get('testMail', [\App\Http\Controllers\WebController::class, 'testMail'])->name('testMail');
-Route::get('iyzico/{id}', [\App\Http\Controllers\WebController::class, 'showPaymentFormLive'])->name('payment.iyzico.live');
-
-
 Route::prefix(LaravelLocalization::setLocale())
     ->group(function () {
         Route::get('cart', [\App\Http\Controllers\WebController::class, 'cart'])->name('cart');
 
+        // Donation checkout (campaign / zakat / cart)
+        Route::get('donate/campaign/{campaign}', [\App\Http\Controllers\DonationController::class, 'campaign'])->name('donate.campaign');
+        Route::get('donate/zakat', [\App\Http\Controllers\DonationController::class, 'zakat'])->name('donate.zakat');
+        Route::get('donate/cart', [\App\Http\Controllers\DonationController::class, 'cart'])->middleware('auth')->name('donate.cart');
     });
 
-
-Route::get('payment/zakat', [\App\Http\Controllers\WebController::class, 'showPaymentFormZakat'])->name('payment.zakat');
 Route::get('add-to-cart', [\App\Http\Controllers\WebController::class, 'addToCartPost'])->name('add.to.cart');
-//Route::get('cart', [\App\Http\Controllers\WebController::class, 'cart'])->name('cart');
 Route::get('cart/remove', [\App\Http\Controllers\WebController::class, 'cartRemove'])->name('cart.remove');
-Route::post('/knet/response', [\App\Http\Controllers\WebController::class, 'showPaymentFormBack'])->name('payment.response');
-Route::get('/knet/error', [\App\Http\Controllers\KnetPaymentController::class, 'paymentError'])->name('payment.error');
-Route::get('/payment/status', [\App\Http\Controllers\WebController::class, 'paymentStatus'])->name('payment.status');
-Route::get('iyzico', [\App\Http\Controllers\WebController::class, 'showPaymentForm'])->name('payment.iyzico');
 
 Route::prefix(LaravelLocalization::setLocale())
     ->middleware([
         'auth',
     ])
     ->group(function () {
-
         Route::get('cart/quantity/update', [\App\Http\Controllers\WebController::class, 'cartQuantityUpdate'])->name('cart.quantity.update');
-        Route::get('payment_success', [\App\Http\Controllers\StripePaymentController::class, 'paymentSuccess'])->name('payment_success');
-        Route::get('payment_cancel', [\App\Http\Controllers\StripePaymentController::class, 'paymentCancel'])->name('payment_cancel');
-        Route::get('stripe/{id}', [\App\Http\Controllers\StripePaymentController::class, 'stripePostLive'])->name('stripe.checkout.live');
-
-        Route::controller(\App\Http\Controllers\StripePaymentController::class)->group(function(){
-            Route::get('stripe', 'stripePost')->name('stripe.checkout');
-        });
-        //knet
-        //Route::get('knet', [\App\Http\Controllers\WebController::class, 'showPaymentForm'])->name('payment.knet');
-
-
     });
-
-//Clear Cache facade value:
-Route::get('/fix', function () {
-    $exitCode = Artisan::call('cache:clear');
-    $exitCode = Artisan::call('optimize');
-    $exitCode = Artisan::call('route:clear');
-    $exitCode = Artisan::call('view:clear');
-    $exitCode = Artisan::call('config:cache');
-    return '<h1>Cache facade value cleared</h1>';
-});
-// FCM
-
-//for facebook
-Route::get('/callback', 'WelcomeController@callback')->name('callback');
-
-Route::get('/terms', 'WelcomeController@terms')->name('terms');
 
 Route::any('/thumbnail/{width}/{height}/{quality}/{filepath}', 'App\Http\Controllers\ImageController@getImage')->where(['filepath' => '.*']);
-
-Route::post('/post/image/upload', 'TinyController@uploadImage')->name('post.image.upload');
-Route::post('/uppy/image/upload', 'TinyController@uppyImage')->name('uppy.image.upload');
-
-
-Route::prefix(LaravelLocalization::setLocale())
-    ->middleware([
-        'auth',
-    ])
-    ->group(function () {
-
-        Route::get('/appointment', 'App\Http\Controllers\WebController@appointment')->name('appointment');
-
-
-    });
-
 
 
 Route::prefix(LaravelLocalization::setLocale())
@@ -98,7 +47,6 @@ Route::prefix(LaravelLocalization::setLocale())
         Route::get('/donation-policy', 'App\Http\Controllers\WebController@donation_policy')->name('donation-policy');
         Route::get('/delivery-and-refund-policy', 'App\Http\Controllers\WebController@delivery_and_refund')->name('delivery-and-refund-policy');
         Route::get('said_about_us', 'App\Http\Controllers\WebController@said_about_us')->name('said_about_us');
-        Route::get('kudus', 'App\Http\Controllers\WebController@kudus')->name('kudus');
 
 
         //Route::get('/home', 'HomeController@index')->name('home');
@@ -130,10 +78,10 @@ Route::prefix(LaravelLocalization::setLocale())
         Route::post('register', 'App\Http\Controllers\Auth\RegisterController@register');
 
         // Password Reset Routes...
-        Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm');
-        Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-        Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
-        Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+        Route::get('password/reset', 'App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+        Route::post('password/email', 'App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+        Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\ResetPasswordController@showResetForm')->name('password.reset');
+        Route::post('password/reset', 'App\Http\Controllers\Auth\ResetPasswordController@reset')->name('password.update');
 
 
 

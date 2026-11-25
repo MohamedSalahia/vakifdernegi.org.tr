@@ -143,9 +143,7 @@
 
                                             <li>
                                                 @if(\Illuminate\Support\Facades\Auth::check())
-                                                    <form method="get" action="{{ route('stripe.checkout.live', $campaign->id) }}">
-                                                        @csrf
-                                                        @method('get')
+                                                    <form method="get" action="{{ route('donate.campaign', $campaign->id) }}">
                                                         <input type="hidden" name="priceLive" class="priceLive">
                                                         <button class="theme-btn btn-style-two quickDonate_{{$campaign->id}}" type="submit" data-loading-text="Please wait..."><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></button>
                                                     </form>
@@ -165,17 +163,19 @@
                                 });
                             });
                             $( ".quickDonate_{{$campaign->id}}" ).click(function() {
-                                if (!$(".price_{{$campaign->id}}").val()) {
+                var amount = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
+                if (!amount) {
                                     alert("يرجى ملئ حقل السعر");
                                     $(".price_{{$campaign->id}}").addClass("errorInput");
                                     $(".price_{{$campaign->id}}").autofocus;
                                     return false;
-                                }
-                            });
+                }
+                $(this).closest('form').find('.priceLive').val(amount);
+            });
 
                             $('.addToCart_{{$campaign->id}}').click(function (){
 
-                                var price = $(".price_{{$campaign->id}}").val();
+                                var price = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
 
                                 if (!price) {
                                     alert("يرجى ملئ حقل السعر");
@@ -336,9 +336,7 @@
 
                                             <li>
                                                 @if(\Illuminate\Support\Facades\Auth::check())
-                                                    <form method="get" action="{{ route('stripe.checkout.live', $campaign->id) }}">
-                                                        @csrf
-                                                        @method('get')
+                                                    <form method="get" action="{{ route('donate.campaign', $campaign->id) }}">
                                                         <input type="hidden" name="priceLive" class="priceLive">
                                                         <button class="theme-btn btn-style-two quickDonate_{{$campaign->id}}" type="submit" data-loading-text="Please wait..."><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></button>
                                                     </form>
@@ -358,17 +356,19 @@
                                 });
                             });
                             $( ".quickDonate_{{$campaign->id}}" ).click(function() {
-                                if (!$(".price_{{$campaign->id}}").val()) {
+                var amount = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
+                if (!amount) {
                                     alert("يرجى ملئ حقل السعر");
                                     $(".price_{{$campaign->id}}").addClass("errorInput");
                                     $(".price_{{$campaign->id}}").autofocus;
                                     return false;
-                                }
-                            });
+                }
+                $(this).closest('form').find('.priceLive').val(amount);
+            });
 
                             $('.addToCart_{{$campaign->id}}').click(function (){
 
-                                var price = $(".price_{{$campaign->id}}").val();
+                                var price = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
 
                                 if (!price) {
                                     alert("يرجى ملئ حقل السعر");

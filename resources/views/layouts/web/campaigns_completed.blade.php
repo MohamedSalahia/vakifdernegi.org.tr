@@ -33,17 +33,19 @@
                 });
             });
             $( ".quickDonate_{{$campaign->id}}" ).click(function() {
-                if (!$(".price_{{$campaign->id}}").val()) {
+                var amount = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
+                if (!amount) {
                     alert("يرجى ملئ حقل السعر");
                     $(".price_{{$campaign->id}}").addClass("errorInput");
                     $(".price_{{$campaign->id}}").autofocus;
                     return false;
                 }
+                $(this).closest('form').find('.priceLive').val(amount);
             });
 
             $('.addToCart_{{$campaign->id}}').click(function (){
 
-                var price = $(".price_{{$campaign->id}}").val();
+                var price = $(".price_{{$campaign->id}}").val() || $('input[name="donate-amount-{{$campaign->id}}"]:checked').val();
 
                 if (!price) {
                     alert("يرجى ملئ حقل السعر");

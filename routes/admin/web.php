@@ -1,9 +1,9 @@
 <?php
-// tiny image upload
-Route::post('/post/image/upload', 'TinyController@uploadImage')->name('post.image.upload');
-
-// uppy image upload
-Route::post('/uppy/image/upload', 'TinyController@uppyImage')->name('uppy.image.upload');
+// editor image uploads (admins only)
+Route::middleware(['auth', 'role:admin|super_admin'])->group(function () {
+    Route::post('/post/image/upload', 'TinyController@uploadImage')->name('post.image.upload');
+    Route::post('/uppy/image/upload', 'TinyController@uppyImage')->name('uppy.image.upload');
+});
 
 // Facebook login
 Route::get('login/facebook', [App\Http\Controllers\Admin\FaceBookController::class, 'redirectToFacebook'])->name('login.facebook');
@@ -126,15 +126,6 @@ Route::prefix(LaravelLocalization::setLocale())->middleware([
             Route::get('/fcm', 'HomeController@fcm')->name('fcm');
             Route::post('/save-token', 'HomeController@saveToken')->name('save-token');
             Route::post('/send-notification', 'HomeController@sendNotification')->name('send.notification');*/
-
-
-            Route::name('profile.')->namespace('Profile')->group(function () {
-
-                //password routes
-                Route::get('/password/edit', 'PasswordController@edit')->name('password.edit');
-                Route::put('/password/update', 'PasswordController@update')->name('password.update');
-
-            });
 
         });
 

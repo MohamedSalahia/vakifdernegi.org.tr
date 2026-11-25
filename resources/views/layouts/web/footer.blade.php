@@ -74,8 +74,10 @@
         </div>
         <div class="footer-bottom">
             <div class="left-content">
-                <a href="javascript:void(0)"><div class="icon"><img width="150" src="{{asset('img/visa-master.png')}}" alt=""></div></a>
-                <a href="javascript:void(0)"><div class="icon"><img width="150" src="{{asset('img/iyzico.png')}}" alt=""></div></a>
+                {{-- Payment logos: show only after a card gateway is approved and live --}}
+                @if(config('donation.card_payment_enabled'))
+                <a href="javascript:void(0)"><div class="icon"><img width="150" src="{{asset('img/visa-master.png')}}" alt="Visa / Mastercard"></div></a>
+                @endif
                 <!--<div class="copyright-text">@lang('site.copyright') <a href="#">{{setting(app()->getLocale())['title']}}.</a> <br>@lang('site.by') <a href="https://brandx-sa.com/">@lang('site.brandx').</a></div>-->
             </div>
             <div class="right-content">

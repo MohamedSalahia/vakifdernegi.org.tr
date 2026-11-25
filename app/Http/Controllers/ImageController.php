@@ -11,7 +11,13 @@ class ImageController extends Controller
 {
     public function getImage($width, $height, $quality, $file_path)
     {
-        //dd($file_path);
+        // Basic hardening: no directory traversal and bounded sizes
+        abort_if(str_contains($file_path, '..'), 404);
+        abort_unless(ctype_digit((string) $width) && ctype_digit((string) $height) && ctype_digit((string) $quality), 404);
+        $width = min((int) $width, 2560);
+        $height = min((int) $height, 2560);
+        $quality = min((int) $quality, 100);
+
         ($width == 0 ? $width = null : '');
         ($height == 0 ? $height = null : '');
         ($quality == 0 ? $quality = 1 : '');

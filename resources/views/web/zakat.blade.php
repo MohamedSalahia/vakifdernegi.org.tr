@@ -47,9 +47,7 @@
                                 <div class="text">
                                     إن الصدقة لتطفئ غضب الرب وتدفع ميتة السوء
                                 </div>
-                                <form method="get" action="{{route('payment.zakat')}}">
-                                        @csrf
-                                        @method('get')
+                                <form method="get" action="{{route('donate.zakat')}}">
                                         <ul class="chicklet-list clearfix text-center">
                                             <li>
                                                 <input type="radio" id="sadaka" name="typeOfDonate" value="sadaka" checked="checked">

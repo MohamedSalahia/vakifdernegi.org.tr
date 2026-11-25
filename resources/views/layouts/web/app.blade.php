@@ -96,5 +96,8 @@
 <!-- Custom JS -->
 <script src="{{asset('web/js/script'.(app()->getLocale() == 'ar' ? '_rtl': '').'.js')}}"></script>
 @stack('scripts')
+@if(session('error'))
+<script>new Noty({ text: @json(session('error')), type: 'error', timeout: 4000, killer: true }).show();</script>
+@endif
 </body>
 </html>

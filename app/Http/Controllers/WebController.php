@@ -16,12 +16,6 @@ use App\Models\Contact;
 use App\Models\UserCart;
 use App\Models\Video;
 use App\Models\Category;
-use Asciisd\Knet\Events\KnetResponseHandled;
-use Asciisd\Knet\Events\KnetResponseReceived;
-use Asciisd\Knet\Events\KnetTransactionHasErrors;
-use Asciisd\Knet\Events\KnetTransactionUpdated;
-use Asciisd\Knet\KnetTransaction;
-use Asciisd\Knet\KPayResponseHandler;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,9 +24,6 @@ use Illuminate\Support\Facades\View;
 use Auth;
 use Session;
 use Intervention\Image\Facades\Image;
-use Asciisd\Knet\Knet;
-use Asciisd\Knet\KPayManager;
-use Asciisd\Knet\Payment;
 use Illuminate\Support\Str;
 
 
@@ -132,7 +123,7 @@ class WebController extends Controller
     public function about()
     {
         //$doctor_categories = DoctorCategory::orderby('id', 'asc')->get();
-        $page = Page::query()->where('id', 3)->first();
+        $page = Page::query()->where('id', 3)->firstOrFail();
         return view('web.page', compact('page'));
 
     }// end of index
@@ -140,7 +131,7 @@ class WebController extends Controller
     public function bank_accounts()
     {
         //$doctor_categories = DoctorCategory::orderby('id', 'asc')->get();
-        $page = Page::query()->where('id', 5)->first();
+        $page = Page::query()->where('id', 5)->firstOrFail();
         return view('web.page', compact('page'));
 
     }// end of index
@@ -245,13 +236,6 @@ class WebController extends Controller
         return view('web.page', compact('page'));
     }
 
-    public function payment(Request $request)
-    {
-        $data['amount'] = 1;
-        $data['currency'] = 'USD';
-        $data['customer'] = 'USD';
-
-    }// end of payment
 
     public function showUserProfile(User $user)
     {
@@ -414,13 +398,6 @@ class WebController extends Controller
         ]);
     }
 
-    public function checkout(){
-
-        //dd($request->all());
-        //$total = $request->totalPrice;
-        $total = UserCart::query()->where('user_id', auth()->id())->sum('total_price');
-        return view('web.checkout', compact('total'));
-    }
 
     public function campaignCategory($id)
     {
@@ -434,305 +411,36 @@ class WebController extends Controller
 
     public function said_about_us()
     {
-        $page = Page::query()->where('id', 4)->first();
+        $page = Page::query()->where('id', 4)->firstOrFail();
         return view('web.page', compact('page'));
 
     }// end of delete
 
     public function privacy()
     {
-        $page = Page::query()->where('id', 1)->first();
+        $page = Page::query()->where('id', 1)->firstOrFail();
         return view('web.page', compact('page'));
 
     }// end of delete
 
     public function terms_of_use()
     {
-        $page = Page::query()->where('id', 2)->first();
+        $page = Page::query()->where('id', 2)->firstOrFail();
         return view('web.page', compact('page'));
 
     }// end of delete
 
     public function donation_policy()
     {
-        $page = Page::query()->where('id', 6)->first();
+        $page = Page::query()->where('id', 6)->firstOrFail();
         return view('web.page', compact('page'));
 
     }// end of donation_policy
 
     public function delivery_and_refund()
     {
-        $page = Page::query()->where('id', 7)->first();
+        $page = Page::query()->where('id', 7)->firstOrFail();
         return view('web.page', compact('page'));
 
     }// end of donation_policy
-
-    public function showPaymentFormLive(Request $request,$id)
-    {
-
-        return view('web.iyzico_payment_page');
-        //$campaign = Campaign::where('id', $id)->with('category')->first();
-        //dd($campaign);
-        /*if (Auth::user()){
-            $user = Auth::user();
-        }else{
-            $user = (object)array(
-                "name"=>"guest",
-                "email"=>"guestMail",
-            );
-
-        }*/
-
-        $knet = KPayManager::make(100, [
-            'user_id' => 1,
-            'udf2' => 'guest',
-            'udf3' => 'test@gmail.com',
-        ]);
-
-        // make KnetTransaction record in your database
-        $payment = new Payment(
-            KnetTransaction::create($knet->toArray())
-        );
-        return redirect($payment->actionUrl());
-        //return $payment->actionUrl(); // redirect user to pay with url generated
-
-
-        /*try{
-            //dd($user->email);
-            //$user = Auth::user();
-            $payment = $user->pay($request->priceLive, [
-                'udf1' => $campaign->id,
-                'udf2' => 'guest',
-                'udf3' => 'test@gmail.com',
-            ]);
-
-        } catch(\Asciisd\Knet\Exceptions\PaymentActionRequired $exception) {
-            // do whatever you want with this
-            $payment = $exception->payment;
-        } finally {
-            // redirect user to payment url to complete the payment
-            dd($payment);
-            if (isset($payment)){
-                return redirect($payment->actionUrl());
-            }else{
-                return redirect('/');
-            }
-        }*/
-    }
-
-    public function showPaymentFormZakat(Request $request)
-    {
-        return view('web.iyzico_payment_page');
-        //dd($request->typeOfDonate);
-        try{
-            $user = Auth::user();
-            $payment = $user->pay($request->price, [
-                'udf1' => 'zakat_page',
-                'udf2' => $user->name,
-                'udf3' => $user->email,
-                'udf4' => $request->typeOfDonate,
-            ]);
-            //dd($payment);
-
-        } catch(\Asciisd\Knet\Exceptions\PaymentActionRequired $exception) {
-            // do whatever you want with this
-            $payment = $exception->payment;
-            //dd($payment);
-        } finally {
-            // redirect user to payment url to complete the payment
-            //dd('aaaaaaaa');
-            //dd($payment);
-            if (isset($payment)){
-                return redirect($payment->actionUrl());
-            }else{
-                return redirect('/');
-            }
-            //return redirect($payment->actionUrl());
-        }
-    }
-
-    public function showPaymentForm(Request $request)
-    {
-
-        return view('web.iyzico_payment_page');
-        $userCarts = UserCart::query()->where('user_id', auth()->id())->update(['status'=>1]);
-        $totalPrice = UserCart::query()->where('user_id', auth()->id())->where('status',1)->sum('total_price');
-
-        //dd($totalPrice);
-        try{
-            $user = Auth::user();
-            $payment = $user->pay($totalPrice, [
-                'udf1' => 0,
-                'udf2' => $user->name,
-                'udf3' => $user->email,
-            ]);
-
-        } catch(\Asciisd\Knet\Exceptions\PaymentActionRequired $exception) {
-            // do whatever you want with this
-            $payment = $exception->payment;
-        } finally {
-            // redirect user to payment url to complete the payment
-            //dd('aaaaaaaa');
-            if (isset($payment)){
-                session(['count' => self::cartCount($request)]);
-                return redirect($payment->actionUrl());
-
-            }else{
-                return redirect('/');
-            }
-
-        }
-    }
-
-    public function showPaymentFormBack(Request $request)
-    {
-
-        KnetResponseReceived::dispatch($request->all());
-
-        $knetResponseHandler = new KPayResponseHandler();
-
-        // find transaction by track id
-        $transaction = KnetTransaction::findByTrackId($request->input('trackid'));
-
-        // check if current response is duplicated and this transaction is already captured,
-        // so don't update the transaction
-        if ($knetResponseHandler->isDuplicated() && $transaction->isCaptured()) {
-            $transaction->update($knetResponseHandler->errorsToArray());
-            KnetTransactionHasErrors::dispatch($transaction);
-            return $this->error($request);
-        }
-
-        // check if current response is invalid payment status and this transaction is already captured,
-        // so don't update the transaction status
-        if ($knetResponseHandler->isInvalidPaymentStatus() && $transaction->isCaptured()) {
-            $transaction->update($knetResponseHandler->errorsToArray());
-            KnetTransactionHasErrors::dispatch($transaction);
-            return $this->error($request);
-        }
-
-        $transaction->update($knetResponseHandler->toArray());
-        KnetTransactionUpdated::dispatch($transaction);
-        KnetResponseHandled::dispatch($knetResponseHandler->toArray());
-
-        $input['campaign_id'] = $transaction->udf1;
-        $input['status'] = false;
-        $input['price'] = $transaction->amt;
-        $input['user_id'] = $transaction->user_id;
-        $input['quantity'] = UserCart::query()->where(['user_id'=>$transaction->user_id, 'campaign_id'=>$transaction->udf1])->count() + 1;
-        $input['total_price'] = $input['quantity']*$input['price'];
-
-
-
-        //dd($transaction);
-        UserCart::updateOrCreate([
-            'user_id' => $transaction->user_id,
-            'status' => 0,
-            'campaign_id' => $transaction->udf1
-        ], $input);
-
-        $emailData = [
-            'name' => 'Mohamad',
-            'email' => 'mhmtslahyt68@gmail.com',
-            'payment_id' => $transaction->paymentid,
-            'track_id' => $transaction->trackid,
-            'price' => $transaction->amt,
-            'transaction_date' => $transaction->created_at,
-        ];
-        if ($transaction->auth_resp_code  == "00")
-
-        \Illuminate\Support\Facades\Mail::to($emailData['email'])->send(new \App\Mail\PaymentConfirmation($emailData));
-        else{
-            \Illuminate\Support\Facades\Mail::to($emailData['email'])->send(new \App\Mail\PaymentError($emailData));
-        }
-
-        //dd($transaction);
-        //return success
-        return view('payment-form-knet', compact('transaction'));
-        //return $this->successMethod();
-
-        //$payment = $request->all();
-        //dd($transaction);
-        //return view('payment-form-knet', compact('payment'));
-    }
-
-    public function error(Request $request)
-    {
-        logger()->error('Knet error occurred with response data: ', $request->all());
-
-        return $this->successMethod();
-    }
-
-    /**
-     * Handle successful calls on the controller.
-     *
-     * @return RedirectResponse|Redirector|Response
-     */
-    protected function successMethod()
-    {
-        return redirect(
-            url(config('knet.redirect_url'))
-        );
-    }
-
-    /*public function paymentStatus(Request $request)
-    {
-        dd($request);
-        if (isset($request)){
-            return view('payment-form-knet');
-        }else{
-            return redirect('/');
-        }
-
-    }*/
-
-    /*public function testMail()
-    {
-        // open an image file
-        $imagePath = public_path('mail.png');
-
-        $img = Image::make($imagePath);
-
-        //$img->resize(320, 240);
-
-        //$img->insert(public_path('favicon.ico'));
-
-        //$img->save(public_path('new.png'));
-        //dd($img);
-
-        //$image = Image::make($imagePath);
-        //dd($image);
-        // Write the text on the image
-        $img->text('Hello', 100, 100, function ($font) {
-            //$font->file(public_path('web/fonts/fontawesome-webfont.woff'));
-            $font->size(24);
-            $font->color('#ffffff');
-            $font->align('center');
-            $font->valign('top');
-        });
-
-        // Save the modified image
-        //$newImagePath = asset('img/new/mail.png');
-        $img->save(public_path('new.png'));
-
-        dd('done');
-
-        // Return the path to the modified image or do any further processing
-        //return $newImagePath;
-
-
-
-        $emailData = [
-            'name' => 'mhmt',
-            'email' => 'mhmt@gmail.com',
-        ];
-
-
-
-        \Illuminate\Support\Facades\Mail::to($emailData['email'])->send(new \App\Mail\RegistrationConfirmation($emailData));
-
-        //Mail::to($emailData['email'])->send(new RegistrationConfirmation($emailData));
-
-        dd('done');
-    }*/
-
 }

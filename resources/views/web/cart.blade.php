@@ -150,29 +150,8 @@
                 </div>
             </div>
                 <div class="text-center" style="margin-top: 80px; ">
-                    {{--<div class="link-btn">
-                        <a href="{{ route('payment.iyzico') }}" class="theme-btn btn-style-one"><span>@lang('site.make_payment')</span></a>
-                    </div>--}}
 
-                    <button type="button" class="theme-btn btn-style-one"
-            data-bs-toggle="modal"
-            data-bs-target="#paymentModal">
-        <span>@lang('site.make_payment')</span>
-    </button>
-
-                    {{--<form method="POST" action="{{ route('payment.knet') }}">
-                        @csrf
-                        <input type="hidden" name="amount" value="10">
-                        <input type="hidden" name="currency" value="KWD">
-                        <button type="submit">Pay with KNet</button>
-                    </form>--}}
-                    {{--<form role="form" action="{{ route('payment.knet') }}" method="POST" class="require-validation">
-                        @csrf
-                        <input type="text" name="name" placeholder="Name">
-                        <input type="text" name="email" placeholder="Email">
-                        <input type="text" name="amount" placeholder="Amount">
-                        <button type="submit">Pay Now</button>
-                    </form>--}}
+                    <a href="{{ route('donate.cart') }}" class="theme-btn btn-style-one"><span>@lang('site.make_payment')</span></a>
                 </div>
             @else
             <div class="text-center" style="margin-top: 80px; ">
