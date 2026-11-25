@@ -318,4 +318,5 @@ return array (
   'mail_confirmed_receipt_note' => 'Dernekler Yönetmeliği uyarınca bankanızın düzenlediği dekont, bağışınız için alındı belgesi yerine geçer. Bu e-posta bilgilendirme amaçlıdır.',
   'mail_thanks' => 'Desteğiniz için teşekkür ederiz.',
   'save' => 'Kaydet',
+  'donation_item' => 'Bağış kalemi',
 );

@@ -45,7 +45,7 @@
 
                                 <h5 class="mt-6 mb-3">@lang('site.donation_items')</h5>
                                 <table class="table table-bordered">
-                                    <thead><tr><th>@lang('site.campaign_name')</th><th>@lang('site.donation_type')</th><th>@lang('site.price')</th></tr></thead>
+                                    <thead><tr><th>@lang('site.donation_item')</th><th>@lang('site.donation_type')</th><th>@lang('site.price')</th></tr></thead>
                                     <tbody>
                                     @foreach($donation->items as $item)
                                         <tr>
