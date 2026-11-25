@@ -1,0 +1,69 @@
+@font-face {
+    font-family: bahij; /* set name */
+    src: url('http://127.0.0.1:8000/web/fonts/Bahij-TheSansArabic-Bold.ttf'); /* url of the font */
+}
+body, h1,h2,h3,h4,h5,h6,p,a {
+    font-family: 'bahij', sans-serif !important;
+}
+.chicklet-list input[type="number"]{
+    height: 50px;
+}
+.errorInput{
+    border: 1px solid red !important;
+}
+/*.header_sticky_buttons{
+    padding: 6px 35px !important;
+}*/
+:root {
+
+    --dark-color: #464547;
+    --dark-color-two: #891c52;
+
+}
+.cause-block-four .image .overlay:before{
+    background: var(--theme-color);
+}
+.link-widget ul li a:before{
+    top: 0 !important;
+}
+.about-widget ul li a:before{
+    top: 0 !important;
+}
+.main-footer{
+    background-color: #242424;
+}
+/*table, th, td {
+    border: 1px solid black !important;
+    border-collapse: collapse !important;
+    padding: 10px;
+}*/
+
+/*tr:nth-child(even) {
+    background-color: rgba(150, 212, 212, 0.4) !important;
+}
+
+th:nth-child(even),td:nth-child(even) {
+    background-color: rgba(150, 212, 212, 0.4) !important;
+}*/
+
+/*.posts-pagination ul li:first-child a{
+    transform: rotate(0deg);
+}
+.posts-pagination ul li:last-child a{
+    transform: rotate(180deg);
+}*/
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+.cart-area .cart-table thead tr th.prod-column{
+    text-align: right;
+}
+
+/*404 page*/
+
+
+
+

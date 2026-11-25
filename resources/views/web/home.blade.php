@@ -1,0 +1,470 @@
+@extends('layouts.web.app')
+@section('page_title')@lang('site.home')@endsection
+
+@section('content')
+    <script src="{{asset('web/js/jquery.js')}}"></script>
+
+    <!-- Bnner Section -->
+    <section class="banner-section style-three">
+        <div class="swiper-container banner-slider">
+            <div class="swiper-wrapper">
+                @foreach($sliders as $slider)
+
+                    <!-- Slide Item -->
+                    <div class="swiper-slide" style="background-image: url({{url('/thumbnail/1920/800/80/storage/slider_images/'.$slider->image)}});">
+                        <div class="content-outer">
+                            <div class="content-box justify-content-center">
+                                <div class="inner text-center">
+                                    {{--<div class="logo"><img src="{{asset('storage/settings/'.setting('logo'))}}" alt=""></div>--}}
+
+                                    <h1>{{$slider->name}} </h1>
+                                    @if($slider->button_url && $slider->button_name)
+                                    <div class="link-box">
+                                        <a href="{{$slider->button_url}}" class="theme-btn btn-style-ten"><span>{{$slider->button_name}}</span></a>
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                @endforeach
+
+            </div>
+            <div class="banner-slider-pagination style-four"></div>
+            <div class="banner-slider-nav style-one">
+                <div class="banner-slider-control banner-slider-button-prev"><span class="fa fa-angle-{{(app()->getLocale() == 'ar' ? 'right':'left')}}"></span></div>
+                <div class="banner-slider-control banner-slider-button-next"><span class="fa fa-angle-{{(app()->getLocale() == 'ar' ? 'left':'right')}}"></span> </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Bnner Section -->
+
+    {{--Projects in progress--}}
+    <section class="causes-section-four">
+        <div class="auto-container">
+            <div class="sec-title text-center">
+                <h5>@lang('site.projects')</h5>
+                <h1>@lang('site.projects_in_progress')</h1>
+            </div>
+            <div class="cause-wrapper">
+                <div class="row" style="justify-content: center">
+                    {{--@foreach($campaigns as $campaign)
+                        <div class="cause-block-four style-two col-lg-4 col-md-6">
+                            <div class="inner-box">
+                                <div class="image">
+                                    <img src="{{($campaign->image ? url('/thumbnail/180/180/80/storage/campaign_images/'.$campaign->image) : url('/thumbnail/180/180/80/storage/settings/'.setting('logo')) )}}" alt="">
+                                    <div class="overlay"><a href="{{route('campaign.show',['campaign'=>$campaign->id,make_slug($campaign->name_slug)])}}" class="donate-box-btn">@lang('site.campaign_details')</a></div>
+                                </div>
+                                <div class="lower-content">
+                                    <div class="wrapper-box">
+                                        <h4><a href="{{route('campaign.show',['campaign'=>$campaign->id,make_slug($campaign->name_slug)])}}">{{$campaign->name}}</a></h4>
+                                        <div class="text">{!! \Illuminate\Support\Str::words(strip_tags($campaign->description),5) !!}</div>
+                                        <div class="info-box">
+                                            <div class="raised">
+                                                @php
+                                                    $userDonation = \App\Models\UserDonation::query()->where('campaign_id', $campaign->id)->sum('total_price');
+
+                                                    $percentage = ($userDonation / $campaign->goal) * 100
+
+                                                @endphp
+                                                --}}{{--{{dd($percentage)}}--}}{{--
+                                                <a href="#"><span>التبرع:</span>{{$userDonation}} د.ك</a>
+                                            </div>
+                                            <div class="count-box">
+                                                <span class="count-text" data-speed="3000" data-stop="{{$percentage}}">0</span><span class="affix">%</span>
+                                            </div>
+                                            <div class="goal">
+                                                <a href="#"><span>مطلوب:</span>{{$campaign->goal}} د.ك</a>
+                                            </div>
+                                            --}}{{--<div class="overlay-content">
+                                                <ul class="clearfix">
+                                                    <li>
+                                                        <div class="addToCart_{{$campaign->id}}"><span class="fa fa-shopping-cart"></span>
+                                                            <div class="toltip-content">
+                                                                <p>Add to Cart</p>
+                                                            </div>
+                                                        </div>
+                                                        <input type="number" name="price_{{$campaign->id}}" class="form-control price_{{$campaign->id}}" />
+                                                        <input type="hidden" name="campaignId_{{$campaign->id}}" value="{{$campaign->id}}" class="form-control campaignId_{{$campaign->id}}" />
+                                                    </li>
+                                                </ul>
+                                            </div>--}}{{--
+
+                                        </div>
+
+                                        <form action="#" class="donate-form default-form" style="margin-top: 28px;">
+                                            <ul class="chicklet-list clearfix">
+                                                <li>
+                                                    <input type="radio" id="donate-amount-1-{{$campaign->id}}" value="10" name="donate-amount-{{$campaign->id}}">
+                                                    <label for="donate-amount-1-{{$campaign->id}}" data-amount="10">10 د.ك</label>
+                                                </li>
+                                                <li>
+                                                    <input type="radio" id="donate-amount-2-{{$campaign->id}}" value="20" name="donate-amount-{{$campaign->id}}" checked="checked">
+                                                    <label for="donate-amount-2-{{$campaign->id}}" data-amount="20">20 د.ك</label>
+                                                </li>
+                                                <li>
+                                                    <input type="radio" id="donate-amount-3-{{$campaign->id}}" value="50" name="donate-amount-{{$campaign->id}}">
+                                                    <label for="donate-amount-3-{{$campaign->id}}" data-amount="50">50 د.ك</label>
+                                                </li>
+                                                <li>
+                                                    <input type="radio" id="donate-amount-4-{{$campaign->id}}" value="100" name="donate-amount-{{$campaign->id}}">
+                                                    <label for="donate-amount-4-{{$campaign->id}}" data-amount="100">100 د.ك</label>
+                                                </li>
+                                                <li class="other-amount">
+                                                    <div class="input-container" data-message="Every dollar you donate helps end hunger.">
+                                                        <input type="number" min="5"  name="price_{{$campaign->id}}" id="other-amount-{{$campaign->id}}" class="price_{{$campaign->id}}" placeholder="@lang('site.another_require')" dir="rtl" required>
+                                                    </div>
+                                                    <input type="hidden" name="campaignId_{{$campaign->id}}" value="{{$campaign->id}}" class="form-control campaignId_{{$campaign->id}}" />
+                                                </li>
+                                            </ul>
+                                        </form>
+                                    </div>
+                                    <div class="overlay-content">
+                                        <ul class="clearfix" style="display: flex;justify-content: space-evenly;">
+                                            <li>
+                                                @if(\Illuminate\Support\Facades\Auth::check())
+                                                    --}}{{--<a href="javascript:;" class="addToCart_{{$campaign->id}}"><span class="fa fa-shopping-cart"></span>
+                                                        <div class="toltip-content">
+                                                            <p>أضف للسلة</p>
+                                                        </div>
+                                                    </a>--}}{{--
+                                                    <a href="javascript:;" class="theme-btn btn-style-two addToCart_{{$campaign->id}}"><span class="fa fa-shopping-cart"></span><span> أضف للسلة</span></a>
+                                                @else
+                                                    --}}{{--<a href="{{route('login')}}"><span class="fa fa-shopping-cart"></span>
+                                                        <div class="toltip-content">
+                                                            <p>أضف للسلة</p>
+                                                        </div>
+                                                    </a>--}}{{--
+
+                                                    <a href="{{ route('login') }}" class="theme-btn btn-style-two"><span class="fa fa-shopping-cart"></span><span> أضف للسلة</span></a>
+                                                @endif
+                                            </li>
+
+                                            <li>
+                                                @if(\Illuminate\Support\Facades\Auth::check())
+                                                    <form method="get" action="{{ route('stripe.checkout.live', $campaign->id) }}">
+                                                        @csrf
+                                                        @method('get')
+                                                        <input type="hidden" name="priceLive" class="priceLive">
+                                                        <button class="theme-btn btn-style-two quickDonate_{{$campaign->id}}" type="submit" data-loading-text="Please wait..."><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></button>
+                                                    </form>
+                                                @else
+                                                    <a href="{{ route('login') }}" class="theme-btn btn-style-two"><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></a>
+                                                @endif
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            $(document).ready(function(){
+                                $('.price_{{$campaign->id}}').change(function() {
+                                    $('.priceLive').val($('.price_{{$campaign->id}}').val());
+                                });
+                            });
+                            $( ".quickDonate_{{$campaign->id}}" ).click(function() {
+                                if (!$(".price_{{$campaign->id}}").val()) {
+                                    alert("يرجى ملئ حقل السعر");
+                                    $(".price_{{$campaign->id}}").addClass("errorInput");
+                                    $(".price_{{$campaign->id}}").autofocus;
+                                    return false;
+                                }
+                            });
+
+                            $('.addToCart_{{$campaign->id}}').click(function (){
+
+                                var price = $(".price_{{$campaign->id}}").val();
+
+                                if (!price) {
+                                    alert("يرجى ملئ حقل السعر");
+                                    $(".price_{{$campaign->id}}").addClass("errorInput");
+                                    $(".price_{{$campaign->id}}").autofocus;
+                                    return false;
+                                }
+                                var campaignId = $('.campaignId_{{$campaign->id}}').val();
+                                if (!campaignId) {
+                                    alert("campaignId must be filled out");
+                                    return false;
+                                }
+                                $.ajax({
+                                    type: "get",
+                                    url: '{{route('add.to.cart')}}',
+                                    data: {
+                                        price: price,
+                                        campaignId: campaignId
+                                    }
+                                }).success(function( data ) {
+                                    $('.item-count').empty().append(data.count);
+                                    new Noty({
+                                        text: data.message,
+                                        timeout: 2000,
+                                        killer: true,
+                                        type: "alert",
+                                        theme: 'semanticui',
+                                        layout: 'bottomLeft'
+                                    }).show();
+                                });
+
+                            })
+
+                            $(function() {
+
+                                $("input:radio[name=donate-amount-{{$campaign->id}}]").on("click",function() {
+                                    var amount = $("input:radio[name=donate-amount-{{$campaign->id}}]:checked").val();
+                                    $('#other-amount-{{$campaign->id}}').val(amount);
+                                    $('.priceLive').val($('.price_{{$campaign->id}}').val());
+                                });
+                            });
+                        </script>
+                    @endforeach--}}
+
+                    @include('layouts.web.campaigns_not_completed')
+
+                        {{--<div class="link-btn">
+                            <a href="http://127.0.0.1:8000/admin/home" class="theme-btn btn-style-one header_sticky_buttons"><span>لوحة التحكم</span></a>
+                        </div>--}}
+                </div>
+            </div>
+            <div class="sec-title text-center">
+                <a href="{{route('campaigns')}}" class="theme-btn btn-style-one header_sticky_buttons"><span>@lang('site.show_all')</span></a>
+            </div>
+        </div>
+    </section>
+    {{--Projects finished--}}
+    @if ($campaigns_completed->count() > 0)
+        <section class="causes-section-four" style="background-image: url({{asset('web/images/background/bg-7.jpg')}});">
+        <div class="auto-container">
+            <div class="sec-title text-center">
+                <h5>@lang('site.projects')</h5>
+                <h1>@lang('site.projects_finished')</h1>
+            </div>
+            <div class="cause-wrapper">
+                <div class="row" style="justify-content: center">
+                    {{--@foreach($campaigns as $campaign)
+                        <div class="cause-block-four style-two col-lg-4 col-md-6">
+                            <div class="inner-box">
+                                <div class="image">
+                                    <img src="{{($campaign->image ? url('/thumbnail/180/180/80/storage/campaign_images/'.$campaign->image) : url('/thumbnail/180/180/80/storage/settings/'.setting('logo')) )}}" alt="">
+                                    <div class="overlay"><a href="{{route('campaign.show',['campaign'=>$campaign->id,make_slug($campaign->name_slug)])}}" class="donate-box-btn">@lang('site.campaign_details')</a></div>
+                                </div>
+                                <div class="lower-content">
+                                    <div class="wrapper-box">
+                                        <h4><a href="{{route('campaign.show',['campaign'=>$campaign->id,make_slug($campaign->name_slug)])}}">{{$campaign->name}}</a></h4>
+                                        <div class="text">{!! \Illuminate\Support\Str::words(strip_tags($campaign->description),5) !!}</div>
+                                        <div class="info-box">
+                                            <div class="raised">
+                                                @php
+                                                    $userDonation = \App\Models\UserDonation::query()->where('campaign_id', $campaign->id)->sum('total_price');
+
+                                                    $percentage = ($userDonation / $campaign->goal) * 100
+
+                                                @endphp
+                                                --}}{{--{{dd($percentage)}}--}}{{--
+                                                <a href="#"><span>التبرع:</span>{{$userDonation}} د.ك</a>
+                                            </div>
+                                            <div class="count-box">
+                                                <span class="count-text" data-speed="3000" data-stop="{{$percentage}}">0</span><span class="affix">%</span>
+                                            </div>
+                                            <div class="goal">
+                                                <a href="#"><span>مطلوب:</span>{{$campaign->goal}} د.ك</a>
+                                            </div>
+                                            --}}{{--<div class="overlay-content">
+                                                <ul class="clearfix">
+                                                    <li>
+                                                        <div class="addToCart_{{$campaign->id}}"><span class="fa fa-shopping-cart"></span>
+                                                            <div class="toltip-content">
+                                                                <p>Add to Cart</p>
+                                                            </div>
+                                                        </div>
+                                                        <input type="number" name="price_{{$campaign->id}}" class="form-control price_{{$campaign->id}}" />
+                                                        <input type="hidden" name="campaignId_{{$campaign->id}}" value="{{$campaign->id}}" class="form-control campaignId_{{$campaign->id}}" />
+                                                    </li>
+                                                </ul>
+                                            </div>--}}{{--
+
+                                        </div>
+
+                                        <form action="#" class="donate-form default-form" style="margin-top: 28px;">
+                                            <ul class="chicklet-list clearfix">
+                                                <li>
+                                                    <input type="radio" id="donate-amount-1-{{$campaign->id}}" value="10" name="donate-amount-{{$campaign->id}}">
+                                                    <label for="donate-amount-1-{{$campaign->id}}" data-amount="10">10 د.ك</label>
+                                                </li>
+                                                <li>
+                                                    <input type="radio" id="donate-amount-2-{{$campaign->id}}" value="20" name="donate-amount-{{$campaign->id}}" checked="checked">
+                                                    <label for="donate-amount-2-{{$campaign->id}}" data-amount="20">20 د.ك</label>
+                                                </li>
+                                                <li>
+                                                    <input type="radio" id="donate-amount-3-{{$campaign->id}}" value="50" name="donate-amount-{{$campaign->id}}">
+                                                    <label for="donate-amount-3-{{$campaign->id}}" data-amount="50">50 د.ك</label>
+                                                </li>
+                                                <li>
+                                                    <input type="radio" id="donate-amount-4-{{$campaign->id}}" value="100" name="donate-amount-{{$campaign->id}}">
+                                                    <label for="donate-amount-4-{{$campaign->id}}" data-amount="100">100 د.ك</label>
+                                                </li>
+                                                <li class="other-amount">
+                                                    <div class="input-container" data-message="Every dollar you donate helps end hunger.">
+                                                        <input type="number" min="5"  name="price_{{$campaign->id}}" id="other-amount-{{$campaign->id}}" class="price_{{$campaign->id}}" placeholder="@lang('site.another_require')" dir="rtl" required>
+                                                    </div>
+                                                    <input type="hidden" name="campaignId_{{$campaign->id}}" value="{{$campaign->id}}" class="form-control campaignId_{{$campaign->id}}" />
+                                                </li>
+                                            </ul>
+                                        </form>
+                                    </div>
+                                    <div class="overlay-content">
+                                        <ul class="clearfix" style="display: flex;justify-content: space-evenly;">
+                                            <li>
+                                                @if(\Illuminate\Support\Facades\Auth::check())
+                                                    --}}{{--<a href="javascript:;" class="addToCart_{{$campaign->id}}"><span class="fa fa-shopping-cart"></span>
+                                                        <div class="toltip-content">
+                                                            <p>أضف للسلة</p>
+                                                        </div>
+                                                    </a>--}}{{--
+                                                    <a href="javascript:;" class="theme-btn btn-style-two addToCart_{{$campaign->id}}"><span class="fa fa-shopping-cart"></span><span> أضف للسلة</span></a>
+                                                @else
+                                                    --}}{{--<a href="{{route('login')}}"><span class="fa fa-shopping-cart"></span>
+                                                        <div class="toltip-content">
+                                                            <p>أضف للسلة</p>
+                                                        </div>
+                                                    </a>--}}{{--
+
+                                                    <a href="{{ route('login') }}" class="theme-btn btn-style-two"><span class="fa fa-shopping-cart"></span><span> أضف للسلة</span></a>
+                                                @endif
+                                            </li>
+
+                                            <li>
+                                                @if(\Illuminate\Support\Facades\Auth::check())
+                                                    <form method="get" action="{{ route('stripe.checkout.live', $campaign->id) }}">
+                                                        @csrf
+                                                        @method('get')
+                                                        <input type="hidden" name="priceLive" class="priceLive">
+                                                        <button class="theme-btn btn-style-two quickDonate_{{$campaign->id}}" type="submit" data-loading-text="Please wait..."><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></button>
+                                                    </form>
+                                                @else
+                                                    <a href="{{ route('login') }}" class="theme-btn btn-style-two"><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></a>
+                                                @endif
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            $(document).ready(function(){
+                                $('.price_{{$campaign->id}}').change(function() {
+                                    $('.priceLive').val($('.price_{{$campaign->id}}').val());
+                                });
+                            });
+                            $( ".quickDonate_{{$campaign->id}}" ).click(function() {
+                                if (!$(".price_{{$campaign->id}}").val()) {
+                                    alert("يرجى ملئ حقل السعر");
+                                    $(".price_{{$campaign->id}}").addClass("errorInput");
+                                    $(".price_{{$campaign->id}}").autofocus;
+                                    return false;
+                                }
+                            });
+
+                            $('.addToCart_{{$campaign->id}}').click(function (){
+
+                                var price = $(".price_{{$campaign->id}}").val();
+
+                                if (!price) {
+                                    alert("يرجى ملئ حقل السعر");
+                                    $(".price_{{$campaign->id}}").addClass("errorInput");
+                                    $(".price_{{$campaign->id}}").autofocus;
+                                    return false;
+                                }
+                                var campaignId = $('.campaignId_{{$campaign->id}}').val();
+                                if (!campaignId) {
+                                    alert("campaignId must be filled out");
+                                    return false;
+                                }
+                                $.ajax({
+                                    type: "get",
+                                    url: '{{route('add.to.cart')}}',
+                                    data: {
+                                        price: price,
+                                        campaignId: campaignId
+                                    }
+                                }).success(function( data ) {
+                                    $('.item-count').empty().append(data.count);
+                                    new Noty({
+                                        text: data.message,
+                                        timeout: 2000,
+                                        killer: true,
+                                        type: "alert",
+                                        theme: 'semanticui',
+                                        layout: 'bottomLeft'
+                                    }).show();
+                                });
+
+                            })
+
+                            $(function() {
+
+                                $("input:radio[name=donate-amount-{{$campaign->id}}]").on("click",function() {
+                                    var amount = $("input:radio[name=donate-amount-{{$campaign->id}}]:checked").val();
+                                    $('#other-amount-{{$campaign->id}}').val(amount);
+                                    $('.priceLive').val($('.price_{{$campaign->id}}').val());
+                                });
+                            });
+                        </script>
+                    @endforeach--}}
+
+                    @include('layouts.web.campaigns_completed')
+
+                    {{--<div class="link-btn">
+                        <a href="http://127.0.0.1:8000/admin/home" class="theme-btn btn-style-one header_sticky_buttons"><span>لوحة التحكم</span></a>
+                    </div>--}}
+                </div>
+            </div>
+            <div class="sec-title text-center">
+                <a href="{{route('completed-campaigns')}}" class="theme-btn btn-style-one header_sticky_buttons"><span>@lang('site.show_all')</span></a>
+            </div>
+        </div>
+    </section>
+    @endif
+
+    <!-- Blog Section -->
+    <section class="blog-section">
+        <div class="auto-container">
+             <div class="sec-title text-center">
+                 <h5>@lang('site.home_blogs_title')</h5>
+                 <h1>@lang('site.home_blogs_description')</h1>
+             </div>
+            <div class="row">
+                @foreach($blogs as $blog)
+
+                    <!-- News Block Two -->
+                    <div class="col-lg-4 news-block-two style-two">
+                        <div class="inner-box wow fadeInUp" data-wow-delay="200ms">
+                            <div class="image">
+                                <a href="{{route('blog.show',['blog'=>$blog->id,make_slug($blog->name)])}}"><img src="{{($blog->image ? url('/thumbnail/950/450/80/storage/blog_images/'.$blog->image) : url('/thumbnail/356/267/80/storage/settings/'.setting('logo')) )}}" alt=""></a>
+                            </div>
+                            <div class="lower-content">
+                                <div class="date"><span class="flaticon-clock"></span>{{ $blog->created_at->format('Y-m-d') }}</div>
+                                <h4><a href="{{route('blog.show',['blog'=>$blog->id,make_slug($blog->name)])}}">{{$blog->name}}</a></h4>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+                {{--<a href="{{route('blogs')}}" class="theme-btn btn-style-twelve"><span>@lang('site.all_blogs')</span></a>--}}
+            </div>
+        </div>
+    </section>
+@endsection
+
+@push('scripts')
+
+    <script>
+        $(function() {
+
+            $("input:radio[name=amount]").on("click",function() {
+                var amount = $("input:radio[name=amount]:checked").val();
+                $('#textAmount').val(amount);
+            });
+        });
+    </script>
+@endpush

@@ -1,0 +1,160 @@
+@if ($campaigns->count() > 0)
+    @foreach($campaigns as $campaign)
+        <div class="cause-block-four style-two col-lg-4 col-md-6">
+            <div class="inner-box">
+                <div class="image">
+                    <img src="{{($campaign->image ? url('/thumbnail/180/180/80/storage/campaign_images/'.$campaign->image) : url('/thumbnail/180/180/80/storage/settings/'.setting('logo')) )}}" alt="">
+                    <div class="overlay"><a href="{{route('campaign.show',['campaign'=>$campaign->id,make_slug($campaign->name_slug)])}}" class="donate-box-btn">@lang('site.campaign_details')</a></div>
+                </div>
+                <div class="lower-content">
+                    <div class="wrapper-box">
+                        <h4><a href="{{route('campaign.show',['campaign'=>$campaign->id,make_slug($campaign->name_slug)])}}">{{$campaign->name}}</a></h4>
+                        <p>@lang('site.campaign_location'): {{$campaign->country}}</p>
+                        <div class="text">{!! \Illuminate\Support\Str::words(strip_tags($campaign->description),5) !!}</div>
+                        <div class="info-box">
+                            <div class="raised">
+                                @php
+                                    $userDonation = \App\Models\UserDonation::query()->where('campaign_id', $campaign->id)->sum('total_price');
+
+                                    $percentage = ($userDonation / $campaign->goal) * 100
+
+                                @endphp
+                                {{--{{dd($percentage)}}--}}
+                                <a href="javascript:;"><span>@lang('site.donate_total'):</span>{{$userDonation}} @lang('site.kuveyt_dinari')</a>
+                            </div>
+                            <div class="count-box">
+                                <span class="count-text" data-speed="3000" data-stop="{{$percentage}}">0</span><span class="affix">%</span>
+                            </div>
+                            <div class="goal">
+                                <a href="javascript:;"><span>@lang('site.require'):</span>{{$campaign->goal}} @lang('site.kuveyt_dinari')</a>
+                            </div>
+                            {{--<div class="donars"><span>@lang('site.country')</span> <br>{{$campaign->country}}</div>--}}
+
+                        </div>
+
+                        <form action="#" class="donate-form default-form" style="margin-top: 28px;">
+                            <ul class="chicklet-list clearfix">
+                                <li>
+                                    <input type="radio" id="donate-amount-1-{{$campaign->id}}" value="10" name="donate-amount-{{$campaign->id}}">
+                                    <label for="donate-amount-1-{{$campaign->id}}" data-amount="10">10 @lang('site.kuveyt_dinari')</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="donate-amount-2-{{$campaign->id}}" value="20" name="donate-amount-{{$campaign->id}}" checked="checked">
+                                    <label for="donate-amount-2-{{$campaign->id}}" data-amount="20">20 @lang('site.kuveyt_dinari')</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="donate-amount-3-{{$campaign->id}}" value="30" name="donate-amount-{{$campaign->id}}">
+                                    <label for="donate-amount-3-{{$campaign->id}}" data-amount="30">30 @lang('site.kuveyt_dinari')</label>
+                                </li>
+                                <li>
+                                    <input type="radio" id="donate-amount-4-{{$campaign->id}}" value="50" name="donate-amount-{{$campaign->id}}">
+                                    <label for="donate-amount-4-{{$campaign->id}}" data-amount="50">50 @lang('site.kuveyt_dinari')</label>
+                                </li>
+                                <li class="other-amount">
+                                    <div class="input-container" data-message="Every dollar you donate helps end hunger.">
+                                        <input type="number" min="5"  name="price_{{$campaign->id}}" id="other-amount-{{$campaign->id}}" class="price_{{$campaign->id}}" placeholder="@lang('site.another_require')" dir="rtl" required>
+                                    </div>
+                                    <input type="hidden" name="campaignId_{{$campaign->id}}" value="{{$campaign->id}}" class="form-control campaignId_{{$campaign->id}}" />
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                    <div class="overlay-content">
+                        <ul class="clearfix" style="display: flex;justify-content: space-evenly;">
+                            <li>
+                                <a href="javascript:;" class="theme-btn btn-style-two addToCart_{{$campaign->id}}"><span class="fa fa-shopping-cart"></span><span> @lang('site.add_to_card')</span></a>
+                            </li>
+
+                            <li>
+{{--
+                                <form method="get" action="{{ route('payment.iyzico.live', $campaign->id) }}">
+--}}
+                                    <form onsubmit="event.preventDefault(); openPaymentModal();">
+
+
+                                    @csrf
+                                    @method('get')
+                                    <input type="hidden" name="priceLive" class="priceLive">
+                                    <button class="theme-btn btn-style-two quickDonate_{{$campaign->id}}" type="submit" data-loading-text="Please wait..."><span class="flaticon-heart-1"></span><span>@lang('site.direct_donation')</span></button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function(){
+                $('.price_{{$campaign->id}}').change(function() {
+                    //alert('change');
+                    $('.priceLive').val($('.price_{{$campaign->id}}').val());
+                });
+            });
+            $( ".quickDonate_{{$campaign->id}}" ).click(function() {
+                if (!$(".price_{{$campaign->id}}").val()) {
+                    alert("يرجى ملئ حقل السعر");
+                    $(".price_{{$campaign->id}}").addClass("errorInput");
+                    $(".price_{{$campaign->id}}").autofocus;
+                    return false;
+                }
+            });
+
+            $('.addToCart_{{$campaign->id}}').click(function (){
+
+                var price = $(".price_{{$campaign->id}}").val();
+
+                if (!price) {
+                    alert("يرجى ملئ حقل السعر");
+                    $(".price_{{$campaign->id}}").addClass("errorInput");
+                    $(".price_{{$campaign->id}}").autofocus;
+                    return false;
+                }
+                var campaignId = $('.campaignId_{{$campaign->id}}').val();
+                if (!campaignId) {
+                    alert("campaignId must be filled out");
+                    return false;
+                }
+                $.ajax({
+                    type: "get",
+                    url: '{{route('add.to.cart')}}',
+                    data: {
+                        price: price,
+                        campaignId: campaignId
+                    }
+                }).success(function( data ) {
+                    $('.item-count').empty().append(data.count);
+                    new Noty({
+                        text: data.message,
+                        timeout: 2000,
+                        killer: true,
+                        type: "alert",
+                        theme: 'semanticui',
+                        layout: 'bottomLeft'
+                    }).show();
+                });
+
+            })
+
+            $(function() {
+
+                $("input:radio[name=donate-amount-{{$campaign->id}}]").on("click",function() {
+                    var amount = $("input:radio[name=donate-amount-{{$campaign->id}}]:checked").val();
+                    $('#other-amount-{{$campaign->id}}').val(amount);
+                    $('.priceLive').val($('.price_{{$campaign->id}}').val());
+                });
+            });
+        </script>
+    @endforeach
+@else
+    <div class="alert alert-dismissible fade show" role="alert">
+        <strong><h3>@lang('site.no_data_found')</h3></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="header-sign-in-up">
+        <a href="{{route('/')}}" class="theme-btn btn-style-one"><span>العودة للصفحة الرئيسية</span></a>
+    </div>
+@endif
+
+
+
+
