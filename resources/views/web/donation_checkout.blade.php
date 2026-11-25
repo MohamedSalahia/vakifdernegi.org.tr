@@ -50,10 +50,12 @@
                             <span>@lang('site.total')</span>
                             <span>{{ number_format($donation['amount'], 2) }} @lang('site.kuveyt_dinari')</span>
                         </div>
+                        @if($bankTransferEnabled)
                         <div class="dc-row">
                             <span>@lang('site.reference_no')</span>
                             <span class="dc-ref">{{ $donation['reference'] }}</span>
                         </div>
+                        @endif
                     </div>
                 </div>
 
@@ -82,6 +84,7 @@
                                 <div class="dc-note">@lang('site.card_payment_soon')</div>
                             @endif
 
+                            @if($bankTransferEnabled)
                             <h4 style="margin-top:20px">@lang('site.pay_by_bank_transfer')</h4>
                             <p>@lang('site.bank_transfer_note')</p>
                             <p><span class="dc-ref">{{ $donation['reference'] }}</span></p>
@@ -92,9 +95,19 @@
                                 <p><a href="{{ route('bank_accounts') }}">@lang('site.bank_accounts')</a></p>
                             @endif
 
+                            @else
+                                <div class="dc-note" style="margin-top:16px">
+                                    @lang('site.bank_info_unavailable')
+                                    <br><a href="tel:{{ phone_remove_spaces_and_plus() }}">{{ setting('phone') }}</a>
+                                    @if(setting('email')) · <a href="mailto:{{ setting('email') }}">{{ setting('email') }}</a>@endif
+                                </div>
+                            @endif
+
+                            @if($bankTransferEnabled)
                             <p style="margin-top:16px">@lang('site.contact_after_transfer')
                                 <a href="{{ route('contact_us') }}">@lang('site.contact_us')</a>
                             </p>
+                            @endif
                         </div>
                     </div>
                 </div>

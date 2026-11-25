@@ -290,4 +290,5 @@ return array (
   'nzr' => 'Vow',
   'cart_donation' => 'Donation to multiple campaigns',
   'contact_after_transfer' => 'After the transfer you can contact us to confirm your donation and receive a receipt.',
+  'bank_info_unavailable' => 'Our bank account details are currently being updated. To donate, please contact us directly.',
 );

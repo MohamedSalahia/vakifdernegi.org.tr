@@ -82,10 +82,12 @@ class DonationController extends WebController
     private function checkout(array $donation)
     {
         $donation['reference'] = 'BAG-' . now()->format('ymd') . '-' . strtoupper(Str::random(5));
-        $bankPage = Page::query()->find(5); // "Bank accounts" page managed from admin
+        $bankTransferEnabled = (bool) config('donation.bank_transfer_enabled');
+        // "Bank accounts" page managed from admin; only shown once its IBANs are verified.
+        $bankPage = $bankTransferEnabled ? Page::query()->find(5) : null;
         $cardPaymentEnabled = (bool) config('donation.card_payment_enabled');
 
-        return view('web.donation_checkout', compact('donation', 'bankPage', 'cardPaymentEnabled'));
+        return view('web.donation_checkout', compact('donation', 'bankPage', 'cardPaymentEnabled', 'bankTransferEnabled'));
     }
 
     private function validAmount($value): ?float

@@ -206,4 +206,5 @@ return array (
   'nzr' => 'Adak',
   'cart_donation' => 'Birden fazla kampanyaya bağış',
   'contact_after_transfer' => 'Havale sonrası bağışınızı onaylamak ve makbuz almak için bizimle iletişime geçebilirsiniz.',
+  'bank_info_unavailable' => 'Banka hesap bilgilerimiz şu anda güncellenmektedir. Bağış yapmak için lütfen bizimle doğrudan iletişime geçiniz.',
 );

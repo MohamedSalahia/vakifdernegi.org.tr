@@ -130,7 +130,15 @@ class WebController extends Controller
 
     public function bank_accounts()
     {
-        //$doctor_categories = DoctorCategory::orderby('id', 'asc')->get();
+        if (!config('donation.bank_transfer_enabled')) {
+            // IBANs not verified yet: never show unverified accounts to donors.
+            $page = (object) [
+                'name' => __('site.bank_accounts'),
+                'description' => '<p style="padding:40px 0;text-align:center">' . e(__('site.bank_info_unavailable')) . '</p>',
+            ];
+            return view('web.page', compact('page'));
+        }
+
         $page = Page::query()->where('id', 5)->firstOrFail();
         return view('web.page', compact('page'));
 
