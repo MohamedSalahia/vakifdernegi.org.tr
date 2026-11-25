@@ -1,1 +1,3 @@
-cache/
+# New uploads on the server stay out of git (existing tracked images remain tracked)
+*
+!.gitignore

@@ -1,0 +1,11 @@
+---
+# cPanel "Deploy HEAD Commit" tasks.
+# The repository lives directly in public_html, so we only run Laravel's
+# post-update commands there: database migrations, then cache refresh.
+deployment:
+  tasks:
+    - export APP_DIR=/home/vakifdernegiorg/public_html
+    - export PHP_BIN=$(command -v ea-php83 || command -v php)
+    - cd $APP_DIR && $PHP_BIN artisan migrate --force
+    - cd $APP_DIR && $PHP_BIN artisan optimize:clear
+    - cd $APP_DIR && $PHP_BIN artisan config:cache
