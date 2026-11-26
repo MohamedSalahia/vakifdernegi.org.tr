@@ -22,7 +22,7 @@ Route::prefix(LaravelLocalization::setLocale())
         Route::get('donate/quick', [\App\Http\Controllers\DonationController::class, 'quick'])->name('donate.quick');
         Route::get('donate/cart', [\App\Http\Controllers\DonationController::class, 'cart'])->name('donate.cart');
         Route::post('donate', [\App\Http\Controllers\DonationController::class, 'store'])->middleware('throttle:10,1')->name('donate.store');
-        Route::get('donate/thanks/{donation}', [\App\Http\Controllers\DonationController::class, 'show'])->middleware('signed')->name('donate.show');
+        Route::get('donate/thanks/{donation}', [\App\Http\Controllers\DonationController::class, 'show'])->name('donate.show');
     });
 
 

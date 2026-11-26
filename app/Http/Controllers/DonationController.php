@@ -172,11 +172,15 @@ class DonationController extends WebController
             }
         }
 
-        return redirect()->to(URL::signedRoute('donate.show', ['donation' => $donation->reference]));
+        return redirect()->to($donation->thanksUrl());
     }
 
-    public function show(Donation $donation)
+    public function show(Request $request, Donation $donation)
     {
+        // token tied to the reference (language-independent); old ?signature= links still accepted
+        $validToken = is_string($request->query('t')) && hash_equals($donation->accessToken(), $request->query('t'));
+        abort_unless($validToken || ($request->has('signature') && URL::hasValidSignature($request)), 403);
+
         $donation->load('items');
         $bankPage = config('donation.bank_transfer_enabled') ? Page::query()->find(5) : null;
 

@@ -102,13 +102,22 @@ class DonationFlowTest extends TestCase
         $this->assertSame($before, Donation::count());
     }
 
-    public function test_thanks_page_requires_a_valid_signature()
+    public function test_thanks_page_requires_the_donation_token_and_survives_language_switch()
     {
         $this->get('/donate/zakat?price=50')->assertOk();
         $this->post('/donate', ['donor_name' => 'X', 'kvkk' => '1']);
-        $ref = Donation::latest('id')->value('reference');
+        $donation = Donation::latest('id')->firstOrFail();
+        $ref = $donation->reference;
 
         $this->get("/donate/thanks/$ref")->assertForbidden();
+        $this->get("/donate/thanks/$ref?t=wrong")->assertForbidden();
+        $this->get($donation->thanksUrl())->assertOk()->assertSee($ref);
+
+        // the token does not depend on the URL path, so the same token is valid on any localized URL
+        $this->assertSame($donation->accessToken(), Donation::where('reference', $ref)->first()->accessToken());
+        $this->assertStringNotContainsString('/ar/', $donation->thanksUrl());
+
+        // links created before this change (?signature=) keep working
         $this->get(URL::signedRoute('donate.show', ['donation' => $ref]))->assertOk();
     }
 

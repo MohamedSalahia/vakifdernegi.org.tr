@@ -48,6 +48,20 @@ class Donation extends Model
         return __('site.dedication_' . $this->dedication_type . '_text', ['name' => $this->dedication_name]);
     }
 
+    /**
+     * Secret token for the donor's thank-you page. It depends only on the reference
+     * (not on the URL), so switching the site language keeps the link valid.
+     */
+    public function accessToken(): string
+    {
+        return hash_hmac('sha256', 'donation-thanks|' . $this->reference, (string) config('app.key'));
+    }
+
+    public function thanksUrl(): string
+    {
+        return route('donate.show', ['donation' => $this->reference, 't' => $this->accessToken()]);
+    }
+
     public function scopeConfirmed(Builder $query): Builder
     {
         return $query->where('status', self::CONFIRMED);

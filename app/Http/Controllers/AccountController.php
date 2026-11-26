@@ -51,7 +51,7 @@ class AccountController extends Controller
     {
         $this->authorizeDonation($donation);
 
-        return redirect()->to(URL::signedRoute('donate.show', ['donation' => $donation->reference]));
+        return redirect()->to($donation->thanksUrl());
     }
 
     public function receipt(Donation $donation)
