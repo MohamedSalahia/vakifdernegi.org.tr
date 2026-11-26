@@ -123,7 +123,7 @@
                             </div>
                         @else
                             <div class="link-btn">
-                                <a href="{{route('user.profile',['user'=>Auth::user()->id])}}" class="theme-btn btn-style-one"><span>@lang('site.profile')</span></a>
+                                <a href="{{route('account')}}" class="theme-btn btn-style-one"><span>@lang('site.profile')</span></a>
                             </div>
                             <div class="link-btn">
                                 <a href="{{route('logout')}}" class="theme-btn btn-style-one"><span>@lang('site.logout')</span></a>
@@ -193,7 +193,7 @@
 
                 @else
                     <div class="link-btn">
-                        <a href="{{route('user.profile',['user'=>Auth::user()->id])}}" class="theme-btn btn-style-one header_sticky_buttons"><span>@lang('site.profile')</span></a>
+                        <a href="{{route('account')}}" class="theme-btn btn-style-one header_sticky_buttons"><span>@lang('site.profile')</span></a>
                     </div>
                     <div class="link-btn">
                         <a href="{{route('logout')}}" class="theme-btn btn-style-one header_sticky_buttons"><span>@lang('site.logout')</span></a>

@@ -507,6 +507,12 @@
                             <span class="menu-text">@lang('site.donation_settings')</span>
                         </a>
                     </li>
+                    <li class="menu-item {{ request()->is('*settings/login*') ? 'menu-item-active' : '' }}" aria-haspopup="true">
+                        <a href="{{route('admin.settings.login')}}" class="menu-link">
+                            <span class="svg-icon menu-icon"><span class="fa fa-sign-in-alt" style="font-size:17px"></span></span>
+                            <span class="menu-text">@lang('site.login_settings')</span>
+                        </a>
+                    </li>
                     @if (auth()->user()->hasPermission('update_user_donations'))
                     <li class="menu-item {{ request()->is('*admin/expenses*') ? 'menu-item-active' : '' }}" aria-haspopup="true">
                         <a href="{{ route('admin.expenses.index') }}" class="menu-link">

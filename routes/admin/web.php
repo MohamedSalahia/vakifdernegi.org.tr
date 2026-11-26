@@ -5,17 +5,6 @@ Route::middleware(['auth', 'role:admin|super_admin'])->group(function () {
     Route::post('/uppy/image/upload', 'TinyController@uppyImage')->name('uppy.image.upload');
 });
 
-// Facebook login
-Route::get('login/facebook', [App\Http\Controllers\Admin\FaceBookController::class, 'redirectToFacebook'])->name('login.facebook');
-Route::get('login/facebook/callback', [App\Http\Controllers\Admin\FaceBookController::class, 'handleFacebookCallback']);
-
-// Google login
-Route::get('login/google', [App\Http\Controllers\Admin\GoogleController::class, 'redirectToGoogle'])->name('login.google');
-Route::get('login/google/callback', [App\Http\Controllers\Admin\GoogleController::class, 'handleGoogleCallback']);
-
-// Twitter login
-Route::get('login/twitter', [App\Http\Controllers\Admin\TwitterController::class, 'redirectToTwitter'])->name('login.twitter');
-Route::get('login/twitter/callback', [App\Http\Controllers\Admin\TwitterController::class, 'handleTwitterCallback']);
 
 Route::prefix(LaravelLocalization::setLocale())->middleware([
     'localeSessionRedirect',
@@ -118,6 +107,8 @@ Route::prefix(LaravelLocalization::setLocale())->middleware([
             Route::get('/settings/general', 'SettingController@general')->name('settings.general');
             Route::get('/settings/donations', 'DonationSettingsController@edit')->name('settings.donations');
             Route::put('/settings/donations', 'DonationSettingsController@update')->name('settings.donations.update');
+            Route::get('/settings/login', 'LoginSettingsController@edit')->name('settings.login');
+            Route::put('/settings/login', 'LoginSettingsController@update')->name('settings.login.update');
 
             // transparency & help centre
             Route::resource('expenses', 'ExpenseController')->except(['show']);

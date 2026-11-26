@@ -41,7 +41,7 @@ class DonationFlowTest extends TestCase
     {
         // (Arabic /ar URLs are not testable here: the locale prefix is fixed when routes load)
         foreach (['/', '/about_us', '/privacy', '/terms-of-use', '/donation-policy',
-                  '/delivery-and-refund-policy', '/bank_accounts', '/contact_us', '/zakat', '/campaigns'] as $url) {
+                  '/delivery-and-refund-policy', '/bank_accounts', '/contact_us', '/zakat', '/campaigns', '/login', '/login/code', '/register', '/transparency', '/reports', '/help'] as $url) {
             $this->get($url)->assertOk();
         }
         $this->get('/')->assertSee('VAKIF YARDIMLAŞMA DERNEĞİ')->assertDontSee('Kuwait');

@@ -146,6 +146,7 @@
                         <!--end::Action-->
                     </form>
                     <!--end::Form-->
+                    @include('auth.partials.login_options', ['except' => 'password'])
 
                     <div class="row mb-3 text-center">
                         <hr class="col mr-0 ml-0 mt-2 p-0">

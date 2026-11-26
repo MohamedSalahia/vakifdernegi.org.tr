@@ -27,6 +27,12 @@ Route::prefix(LaravelLocalization::setLocale())
 
 
 
+// Google sign-in (fixed, non-localized callback URL to register in Google Cloud Console)
+Route::middleware('guest')->group(function () {
+    Route::get('auth/google', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'redirect'])->name('auth.google');
+    Route::get('auth/google/callback', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+});
+
 Route::any('/thumbnail/{width}/{height}/{quality}/{filepath}', 'App\Http\Controllers\ImageController@getImage')->where(['filepath' => '.*']);
 
 
@@ -42,6 +48,14 @@ Route::prefix(LaravelLocalization::setLocale())
 
         Route::get('bank_accounts', 'App\Http\Controllers\WebController@bank_accounts')->name('bank_accounts');
         Route::get('/privacy', 'App\Http\Controllers\WebController@privacy')->name('privacy');
+
+        // donor account ("Hesabım")
+        Route::get('/account', [\App\Http\Controllers\AccountController::class, 'index'])->name('account');
+        Route::put('/account/profile', [\App\Http\Controllers\AccountController::class, 'updateProfile'])->name('account.profile');
+        Route::put('/account/password', [\App\Http\Controllers\AccountController::class, 'updatePassword'])->name('account.password');
+        Route::get('/account/donations/{donation}', [\App\Http\Controllers\AccountController::class, 'show'])->name('account.donations.show');
+        Route::get('/account/donations/{donation}/receipt', [\App\Http\Controllers\AccountController::class, 'receipt'])->name('account.donations.receipt');
+        Route::get('/account/donations/{donation}/repeat', [\App\Http\Controllers\AccountController::class, 'repeat'])->name('account.donations.repeat');
         Route::get('/transparency', [\App\Http\Controllers\TransparencyController::class, 'transparency'])->name('transparency');
         Route::get('/reports', [\App\Http\Controllers\TransparencyController::class, 'reports'])->name('reports');
         Route::get('/help', [\App\Http\Controllers\TransparencyController::class, 'help'])->name('help');
@@ -70,6 +84,11 @@ Route::prefix(LaravelLocalization::setLocale())
         // Authentication Routes...
         Route::redirect('cp', 'login');
         Route::get('login', 'App\Http\Controllers\Auth\LoginController@showLoginForm')->name('login');
+        // passwordless sign-in with an e-mailed code
+        Route::get('login/code', [\App\Http\Controllers\Auth\EmailCodeController::class, 'showRequest'])->name('login.code');
+        Route::post('login/code', [\App\Http\Controllers\Auth\EmailCodeController::class, 'send'])->middleware('throttle:5,1')->name('login.code.send');
+        Route::get('login/code/verify', [\App\Http\Controllers\Auth\EmailCodeController::class, 'showVerify'])->name('login.code.verify');
+        Route::post('login/code/verify', [\App\Http\Controllers\Auth\EmailCodeController::class, 'verify'])->middleware('throttle:10,1')->name('login.code.check');
         Route::post('login', 'App\Http\Controllers\Auth\LoginController@login');
         //Route::post('logout', 'Auth\LoginController@logout')->name('logout');
         Route::get('/logout', 'App\Http\Controllers\Auth\LoginController@logout')->name('logout');

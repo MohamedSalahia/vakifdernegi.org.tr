@@ -34,6 +34,12 @@ class LoginController extends Controller
     protected $redirectTo = RouteServiceProvider::HOME;
 
 
+    /** After password sign-in: admins go to the panel, donors to "Hesabım" (unless an intended URL exists). */
+    protected function redirectTo()
+    {
+        return \App\Services\AccountService::homeFor(auth()->user());
+    }
+
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
