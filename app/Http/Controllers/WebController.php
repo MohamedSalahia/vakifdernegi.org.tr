@@ -46,13 +46,15 @@ class WebController extends Controller
 
         $latest_blogs = Blog::orderBy('id', 'asc')->take(2)->get();
         $sliders = Slider::all();
+        // Campaigns the admin chose to feature in the home slider (only while donations are open)
+        $sliderCampaigns = Campaign::where('show_in_slider', true)->where('status', 'active')->where('complete', 'no')->latest()->get();
         $photos = Photo::all();
         $campaigns = Campaign:: where('status', 'active')->where('complete', 'no')->with('category')->latest()->take(3)->get();
         $campaigns_not_completed = Campaign:: where('status', 'active')->where('complete', 'no')->with('category')->latest()->take(3)->get();
         $campaigns_completed = Campaign:: where('status', 'active')->where('complete', 'yes')->with('category')->latest()->take(3)->get();
         //dd($campaigns);
         $blogs = Blog::latest()->take(3)->get();
-        return view('web.home', compact('latest_blogs', 'sliders', 'blogs', 'photos', 'campaigns', 'campaigns_not_completed', 'campaigns_completed'));
+        return view('web.home', compact('latest_blogs', 'sliders', 'sliderCampaigns', 'blogs', 'photos', 'campaigns', 'campaigns_not_completed', 'campaigns_completed'));
 
     }// end of index
 

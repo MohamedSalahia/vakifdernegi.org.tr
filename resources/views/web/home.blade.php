@@ -8,7 +8,7 @@
     <section class="banner-section style-three">
         <div class="swiper-container banner-slider">
             <div class="swiper-wrapper">
-                @forelse($sliders as $slider)
+                @foreach($sliders as $slider)
 
                     <!-- Slide Item -->
                     <div class="swiper-slide" style="background-image: url({{url('/thumbnail/1920/800/80/storage/slider_images/'.$slider->image)}});">
@@ -28,7 +28,32 @@
                         </div>
                     </div>
 
-                @empty
+                @endforeach
+
+                @foreach($sliderCampaigns as $featured)
+                    @php $featuredRaised = \App\Models\Donation::confirmedTotalForCampaign($featured->id); @endphp
+                    <!-- Campaign featured in the slider (admin: campaigns > show in slider) -->
+                    <div class="swiper-slide" style="background-image: url({{ $featured->image ? url('/thumbnail/1920/800/80/storage/campaign_images/'.$featured->image) : url('/thumbnail/1920/800/80/storage/settings/'.setting('banner')) }});">
+                        <div class="content-outer">
+                            <div class="content-box justify-content-center">
+                                <div class="inner text-center">
+                                    <h1>{{ $featured->name }}</h1>
+                                    @if((float) $featured->goal > 0)
+                                        <div class="text" style="color:#fff;font-size:20px;margin:12px 0 22px">
+                                            @lang('site.require'): <span dir="ltr">{{ number_format((float) $featured->goal, 0, ',', '.') }} TL</span>
+                                            · @lang('site.donate_total'): <span dir="ltr">{{ number_format($featuredRaised, 0, ',', '.') }} TL</span>
+                                        </div>
+                                    @endif
+                                    <div class="link-box">
+                                        <a href="{{ route('campaign.show', [$featured->id, make_slug($featured->name)]) }}" class="theme-btn btn-style-ten"><span>@lang('site.donate_now')</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+
+                @if($sliders->isEmpty() && $sliderCampaigns->isEmpty())
                     <!-- Default hero when no slider has been added from the admin panel -->
                     <div class="swiper-slide" style="background-image: url({{ setting('banner') ? url('/thumbnail/1920/800/80/storage/settings/'.setting('banner')) : asset('web/images/background/bg-7.jpg') }});">
                         <div class="content-outer">
@@ -44,7 +69,7 @@
                             </div>
                         </div>
                     </div>
-                @endforelse
+                @endif
 
             </div>
             <div class="banner-slider-pagination style-four"></div>

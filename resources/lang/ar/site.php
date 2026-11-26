@@ -35,7 +35,7 @@ return array (
   'show_all' => 'عرض الكل',
   'add_new' => 'إضافة جديد',
   'require' => 'المبلغ المستهدف',
-  'donate_total' => 'التبرع',
+  'donate_total' => 'تم جمع',
   'add_to_card' => 'أضف للسلة',
   'direct_donation' => 'تبرع مباشر',
   'another_require' => 'قيمة اخرى',
@@ -639,4 +639,9 @@ return array (
   'cart_items_removed' => 'تمت إزالة :count حملة من سلتك لأنها لم تعد متاحة للتبرع.',
   'cart_items_title' => 'التبرعات في سلتك',
   'cart_checkout_hint' => 'في الخطوة التالية تدخل بياناتك وتنشئ طلب التبرع.',
+  'all_campaigns' => 'جميع الحملات',
+  'show_in_slider' => 'إظهار في سلايدر الصفحة الرئيسية',
+  'show_in_slider_help' => 'عند اختيار نعم تظهر الحملة في سلايدر الصفحة الرئيسية طالما التبرع لها مفتوح.',
+  'yes_option' => 'نعم',
+  'no_option' => 'لا',
 );

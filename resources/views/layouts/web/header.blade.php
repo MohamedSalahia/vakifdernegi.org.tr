@@ -53,8 +53,9 @@
                                             <li><a href="{{route('campaign.category.show',['id'=>$campaignCategory->id,make_slug($campaignCategory->name)])}}">{{$campaignCategory->name}}</a></li>
                                         @endforeach--}}
 
-                                        <li class="dropdown"><a href="{{route('campaigns')}}">@lang('site.projects')</a>
+                                        <li class="dropdown"><a href="{{route('campaigns')}}" class="allow-link">@lang('site.projects')</a>
                                             <ul>
+                                                <li><a href="{{route('campaigns')}}"><strong>@lang('site.all_campaigns')</strong></a></li>
                                                 @foreach($campaignCategories as $campaignCategory)
                                                     <li><a href="{{route('campaign.category.show',['id'=>$campaignCategory->id,make_slug($campaignCategory->name)])}}">{{$campaignCategory->name}}</a></li>
                                                 @endforeach

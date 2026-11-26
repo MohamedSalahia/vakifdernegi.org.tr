@@ -95,7 +95,7 @@
 <script src="{{asset('web/js/jquery.bootstrap-touchspin.js')}}"></script>
 <script src="{{asset('web/js/knob.js')}}"></script>
 <!-- Custom JS -->
-<script src="{{asset('web/js/script'.(app()->getLocale() == 'ar' ? '_rtl': '').'.js')}}"></script>
+<script src="{{asset('web/js/script'.(app()->getLocale() == 'ar' ? '_rtl': '').'.js')}}?v=2"></script>
 {{-- Toast notifications: vakifToast(text, 'success' | 'error' | 'warning') --}}
 <script>
     window.vakifToast = function (text, type) {

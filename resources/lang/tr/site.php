@@ -169,7 +169,7 @@ return array (
     'search' => 'Ara',
     'toplam_tutar' => 'Toplam tutar',
     'require' => 'Hedef',
-    'donate_total' => 'Bağış',
+    'donate_total' => 'Toplanan',
     'kuveyt_dinari' => 'TL',
     'complete' => 'Tamamlandı',
     'bank_accounts' => 'Banka Hesaplarımız',
@@ -325,4 +325,9 @@ return array (
   'cart_items_removed' => 'Artık bağışa açık olmayan :count kampanya sepetinizden çıkarıldı.',
   'cart_items_title' => 'Sepetinizdeki Bağışlar',
   'cart_checkout_hint' => 'Bir sonraki adımda bilgilerinizi girip bağış talebinizi oluşturacaksınız.',
+  'all_campaigns' => 'Tüm Kampanyalar',
+  'show_in_slider' => 'Ana sayfa slider\'ında göster',
+  'show_in_slider_help' => 'Evet seçilirse kampanya, bağışa açık olduğu sürece ana sayfa slider\'ında görünür.',
+  'yes_option' => 'Evet',
+  'no_option' => 'Hayır',
 );

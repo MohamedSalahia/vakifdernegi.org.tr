@@ -74,8 +74,9 @@ class CampaignController extends Controller
 
         }//end of for each
 
-        $request->validate($rules);
+        $request->validate($rules + ['show_in_slider' => 'nullable|boolean']);
         $request_data = $request->except(['image']);
+        $request_data['show_in_slider'] = $request->boolean('show_in_slider');
 
         if ($request->image) {
 
@@ -141,9 +142,10 @@ class CampaignController extends Controller
 
         }//end of  for each
 
-        $request->validate($rules);
+        $request->validate($rules + ['show_in_slider' => 'nullable|boolean']);
 
         $request_data = $request->all();
+        $request_data['show_in_slider'] = $request->boolean('show_in_slider');
 
         if ($request->image) {
 

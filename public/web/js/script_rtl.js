@@ -32,7 +32,7 @@
                 scrollLink.fadeOut(300);
             }
             //Disable dropdown parent link
-            $('.navigation li.dropdown > a').on('click', function(e) {
+            $('.navigation li.dropdown > a').not('.allow-link').on('click', function(e) {
                 e.preventDefault();
             });
         }

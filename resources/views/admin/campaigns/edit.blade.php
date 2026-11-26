@@ -193,6 +193,16 @@
                                         <option {{$campaign->complete == 'no' ? 'selected':''}} value="no">لا</option>
                                     </select>
                                 </div>
+                                {{--show in slider--}}
+                                <div class="form-group col-lg-4">
+                                    <label for="form_select_show_in_slider">@lang('site.show_in_slider')</label>
+                                    <select name="show_in_slider" class="form-control" id="form_select_show_in_slider">
+                                        <option value="0" {{ old('show_in_slider', (int) $campaign->show_in_slider) == 0 ? 'selected' : '' }}>@lang('site.no_option')</option>
+                                        <option value="1" {{ old('show_in_slider', (int) $campaign->show_in_slider) == 1 ? 'selected' : '' }}>@lang('site.yes_option')</option>
+                                    </select>
+                                    <span class="form-text text-muted">@lang('site.show_in_slider_help')</span>
+                                </div>
+
                                 {{--image--}}
                                 <div class="form-group col-lg-12">
                                     <label>@lang('site.image')</label>
