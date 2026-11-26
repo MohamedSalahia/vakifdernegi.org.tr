@@ -22,6 +22,7 @@
                                 <a href="javascript:;" class="text-muted">@lang('site.edit')</a>
                             </li>
                         </ul>
+                    <a href="{{ route('admin.campaigns.updates.index', $campaign) }}" class="btn btn-light-info btn-sm ml-3">@lang('site.campaign_updates') ({{ $campaign->updates()->count() }})</a>
                         <!--end::Breadcrumb-->
                     </div>
                     <!--end::Page Heading-->
@@ -192,6 +193,33 @@
                                         <option {{$campaign->complete == 'yes' ? 'selected':''}} value="yes">نعم</option>
                                         <option {{$campaign->complete == 'no' ? 'selected':''}} value="no">لا</option>
                                     </select>
+                                </div>
+                                {{--is_urgent--}}
+                                <div class="form-group col-lg-4">
+                                    <label for="form_select_is_urgent">@lang('site.campaign_is_urgent')</label>
+                                    <select name="is_urgent" class="form-control" id="form_select_is_urgent">
+                                        <option value="0" {{ old('is_urgent', (int) $campaign->is_urgent) == 0 ? 'selected' : '' }}>@lang('site.no_option')</option>
+                                        <option value="1" {{ old('is_urgent', (int) $campaign->is_urgent) == 1 ? 'selected' : '' }}>@lang('site.yes_option')</option>
+                                    </select>
+                                    <span class="form-text text-muted">@lang('site.campaign_is_urgent_help')</span>
+                                </div>
+                                {{--accepts_zakat--}}
+                                <div class="form-group col-lg-4">
+                                    <label for="form_select_accepts_zakat">@lang('site.campaign_accepts_zakat')</label>
+                                    <select name="accepts_zakat" class="form-control" id="form_select_accepts_zakat">
+                                        <option value="0" {{ old('accepts_zakat', (int) $campaign->accepts_zakat) == 0 ? 'selected' : '' }}>@lang('site.no_option')</option>
+                                        <option value="1" {{ old('accepts_zakat', (int) $campaign->accepts_zakat) == 1 ? 'selected' : '' }}>@lang('site.yes_option')</option>
+                                    </select>
+                                    <span class="form-text text-muted">@lang('site.campaign_accepts_zakat_help')</span>
+                                </div>
+                                {{--show_donors--}}
+                                <div class="form-group col-lg-4">
+                                    <label for="form_select_show_donors">@lang('site.campaign_show_donors')</label>
+                                    <select name="show_donors" class="form-control" id="form_select_show_donors">
+                                        <option value="0" {{ old('show_donors', (int) $campaign->show_donors) == 0 ? 'selected' : '' }}>@lang('site.no_option')</option>
+                                        <option value="1" {{ old('show_donors', (int) $campaign->show_donors) == 1 ? 'selected' : '' }}>@lang('site.yes_option')</option>
+                                    </select>
+                                    <span class="form-text text-muted">@lang('site.campaign_show_donors_help')</span>
                                 </div>
                                 {{--show in slider--}}
                                 <div class="form-group col-lg-4">

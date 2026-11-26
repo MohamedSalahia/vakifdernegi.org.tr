@@ -2,6 +2,9 @@
     <a href="{{ route('admin.campaigns.edit', $id) }}">
         <button type="button" class="btn btn-outline-primary">تعديل</button>
     </a>
+    <a href="{{ route('admin.campaigns.updates.index', $id) }}">
+        <button type="button" class="btn btn-outline-info">@lang('site.campaign_updates')</button>
+    </a>
 @endif
 
 @if (auth()->user()->hasPermission('delete_campaigns'))

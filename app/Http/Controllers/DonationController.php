@@ -120,6 +120,7 @@ class DonationController extends WebController
                 'donor_name' => $data['donor_name'],
                 'donor_email' => $data['donor_email'] ?? null,
                 'donor_phone' => $data['donor_phone'] ?? null,
+                'show_name' => $request->boolean('show_name'),
                 'payment_method' => 'bank_transfer',
                 'status' => Donation::PENDING,
                 'locale' => app()->getLocale(),

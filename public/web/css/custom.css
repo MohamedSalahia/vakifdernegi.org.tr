@@ -107,3 +107,39 @@ html[dir="rtl"] .vk-toasts { right: 24px; }
 .vk-toast__close { flex: 0 0 auto; background: none; border: 0; color: #fff; opacity: .8; font-size: 20px; line-height: 1; cursor: pointer; padding: 0 2px; }
 .vk-toast__close:hover { opacity: 1; }
 @media (max-width: 480px) { .vk-toasts { bottom: 12px; width: auto; } html[dir="ltr"] .vk-toasts, html[dir="rtl"] .vk-toasts { left: 16px; right: 16px; } }
+
+/* ------------------------------------------------------------------
+   Campaign cards & page: badges, progress, tabs, share bar
+   ------------------------------------------------------------------ */
+.cause-block-four .image { position: relative; }
+.vk-badges { position: absolute; top: 12px; inset-inline-start: 12px; display: flex; gap: 6px; flex-wrap: wrap; z-index: 2; }
+.vk-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #fff; line-height: 1.4; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+.vk-badge--urgent { background: #c62828; }
+.vk-badge--zakat { background: #2e7d32; }
+.vk-stats { margin: 14px 0 4px; }
+.vk-progress { height: 8px; background: #eee; border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+.vk-progress span { display: block; height: 100%; background: var(--theme-color, #8a1f5c); border-radius: 8px; transition: width .6s ease; }
+.vk-stats__row { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; margin-bottom: 4px; flex-wrap: wrap; }
+.vk-stats__muted { color: #777; font-size: 13px; }
+
+.vk-campaign-tabs { display: flex; gap: 4px; border-bottom: 2px solid #eee; margin: 0 0 24px; flex-wrap: wrap; padding: 0; list-style: none; }
+.vk-campaign-tabs button { background: none; border: 0; padding: 12px 18px; font-size: 16px; font-weight: 600; color: #666; border-bottom: 3px solid transparent; margin-bottom: -2px; cursor: pointer; }
+.vk-campaign-tabs button.active { color: var(--theme-color, #8a1f5c); border-bottom-color: var(--theme-color, #8a1f5c); }
+.vk-campaign-tabs .vk-count { display: inline-block; min-width: 22px; padding: 0 6px; margin-inline-start: 4px; border-radius: 11px; background: #f1f1f1; font-size: 12px; color: #555; }
+.vk-tab-panel { display: none; }
+.vk-tab-panel.active { display: block; }
+.vk-details-table { width: 100%; }
+.vk-details-table th, .vk-details-table td { padding: 10px 8px; border-bottom: 1px solid #f0f0f0; text-align: start; }
+.vk-details-table th { color: #777; font-weight: 600; width: 45%; }
+.vk-update { border-inline-start: 3px solid var(--theme-color, #8a1f5c); padding: 4px 0 16px 16px; padding-inline-start: 16px; margin-bottom: 18px; }
+.vk-update__date { color: #888; font-size: 13px; }
+.vk-update h4 { margin: 4px 0 8px; font-size: 18px; }
+.vk-update img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+.vk-donor { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f2f2f2; }
+.vk-donor__name { font-weight: 600; }
+.vk-donor__meta { color: #888; font-size: 13px; }
+.vk-share { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 18px 0; }
+.vk-share__label { font-weight: 600; margin-inline-end: 4px; }
+.vk-share a, .vk-share button { width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; border: 0; font-size: 17px; cursor: pointer; }
+.vk-share .wa { background: #25d366; } .vk-share .fb { background: #1877f2; } .vk-share .tw { background: #111; } .vk-share .tg { background: #229ed9; } .vk-share .cp { background: #777; }
+.vk-share__count { color: #777; font-size: 14px; margin-inline-start: 6px; }

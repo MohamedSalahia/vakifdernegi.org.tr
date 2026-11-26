@@ -52,13 +52,78 @@
     <div class="sidebar-page-container cause-details">
         <div class="auto-container">
             <div class="row">
-                <div class="col-lg-6 content-column">
-                    <div class="image mb-50"><img src="{{url('/thumbnail/1900/1000/80/storage/campaign_images/'.($campaign->image ? $campaign->image : 'default.png'))}}{{--{{ Storage::url('campaign_images/' . $campaign->image) }}--}}" alt=""></div>
-                    <div class="sec-title mb-40">
-                        {!! $campaign->description !!}
+                <div class="col-lg-7 content-column">
+                    <div class="image mb-30" style="position:relative">
+                        <img src="{{url('/thumbnail/1900/1000/80/storage/campaign_images/'.($campaign->image ? $campaign->image : 'default.png'))}}" alt="{{ $campaign->image_alt ?: $campaign->name }}">
+                        @include('web.partials.campaign_badges', ['campaign' => $campaign])
                     </div>
+
+                    @include('web.partials.campaign_share', ['campaign' => $campaign])
+
+                    @php
+                        $campaignUpdates = $campaign->updates()->get();
+                        $publicDonations = $campaign->show_donors ? $campaign->confirmedDonationItems()->limit(50)->get() : collect();
+                        $st = $campaign->stats();
+                    @endphp
+                    <ul class="vk-campaign-tabs" role="tablist">
+                        <li><button type="button" class="active" data-tab="overview" role="tab">@lang('site.tab_overview')</button></li>
+                        <li><button type="button" data-tab="details" role="tab">@lang('site.tab_details')</button></li>
+                        <li><button type="button" data-tab="updates" role="tab">@lang('site.tab_updates')<span class="vk-count">{{ $campaignUpdates->count() }}</span></button></li>
+                        @if($campaign->show_donors)
+                            <li><button type="button" data-tab="donations" role="tab">@lang('site.tab_donations')<span class="vk-count">{{ $st['donors'] }}</span></button></li>
+                        @endif
+                    </ul>
+
+                    <div class="vk-tab-panel active" data-panel="overview">
+                        <div class="sec-title mb-40">{!! $campaign->description !!}</div>
+                    </div>
+
+                    <div class="vk-tab-panel" data-panel="details">
+                        <table class="vk-details-table">
+                            @if($campaign->category)<tr><th>@lang('site.category')</th><td>{{ $campaign->category->name }}</td></tr>@endif
+                            <tr><th>@lang('site.country')</th><td>{{ $campaign->country }}</td></tr>
+                            @if($st['goal'] > 0)
+                                <tr><th>@lang('site.require')</th><td dir="ltr">{{ number_format($st['goal'], 0, ',', '.') }} TL</td></tr>
+                                <tr><th>@lang('site.remaining')</th><td dir="ltr">{{ number_format($st['remaining'], 0, ',', '.') }} TL</td></tr>
+                            @endif
+                            <tr><th>@lang('site.donate_total')</th><td dir="ltr">{{ number_format($st['raised'], 0, ',', '.') }} TL</td></tr>
+                            <tr><th>@lang('site.donors_count')</th><td>{{ $st['donors'] }}</td></tr>
+                            <tr><th>@lang('site.campaign_accepts_zakat')</th><td>{{ $campaign->accepts_zakat ? __('site.yes_option') : __('site.no_option') }}</td></tr>
+                            <tr><th>@lang('site.campaign_started')</th><td dir="ltr">{{ $campaign->created_at->format('d.m.Y') }}</td></tr>
+                            <tr><th>@lang('site.campaign_number')</th><td dir="ltr">#{{ $campaign->id }}</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="vk-tab-panel" data-panel="updates">
+                        @forelse($campaignUpdates as $u)
+                            <div class="vk-update">
+                                <div class="vk-update__date" dir="ltr">{{ $u->published_at->format('d.m.Y') }}</div>
+                                <h4>{{ $u->title }}</h4>
+                                <div>{!! nl2br(e($u->body)) !!}</div>
+                                @if($u->image)<img src="{{ url('/thumbnail/900/600/80/storage/campaign_updates/'.$u->image) }}" alt="{{ $u->title }}" loading="lazy">@endif
+                            </div>
+                        @empty
+                            <p class="vk-stats__muted">@lang('site.no_updates_public')</p>
+                        @endforelse
+                    </div>
+
+                    @if($campaign->show_donors)
+                        <div class="vk-tab-panel" data-panel="donations">
+                            @forelse($publicDonations as $item)
+                                <div class="vk-donor">
+                                    <div>
+                                        <div class="vk-donor__name">{{ $item->donation->show_name ? $item->donation->donor_name : __('site.anonymous_donor') }}</div>
+                                        <div class="vk-donor__meta" dir="ltr">{{ optional($item->donation->confirmed_at ?? $item->created_at)->format('d.m.Y') }}</div>
+                                    </div>
+                                    <strong dir="ltr">{{ number_format((float) $item->amount, 0, ',', '.') }} TL</strong>
+                                </div>
+                            @empty
+                                <p class="vk-stats__muted">@lang('site.no_donations_public')</p>
+                            @endforelse
+                        </div>
+                    @endif
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-5">
                     <div class="sidebar">
                         <div class="donate-form-area">
                             <div class="donate-form-wrapper">
@@ -114,6 +179,14 @@
 
 
 @push('scripts')
+    <script>
+        document.querySelectorAll('.vk-campaign-tabs button').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.vk-campaign-tabs button').forEach(function (b) { b.classList.toggle('active', b === btn); });
+                document.querySelectorAll('.vk-tab-panel').forEach(function (p) { p.classList.toggle('active', p.dataset.panel === btn.dataset.tab); });
+            });
+        });
+    </script>
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",

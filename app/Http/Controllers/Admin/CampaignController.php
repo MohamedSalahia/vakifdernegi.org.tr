@@ -74,9 +74,11 @@ class CampaignController extends Controller
 
         }//end of for each
 
-        $request->validate($rules + ['show_in_slider' => 'nullable|boolean']);
+        $request->validate($rules + ['show_in_slider' => 'nullable|boolean', 'is_urgent' => 'nullable|boolean', 'accepts_zakat' => 'nullable|boolean', 'show_donors' => 'nullable|boolean']);
         $request_data = $request->except(['image']);
-        $request_data['show_in_slider'] = $request->boolean('show_in_slider');
+        foreach (['show_in_slider', 'is_urgent', 'accepts_zakat', 'show_donors'] as $flag) {
+            $request_data[$flag] = $request->boolean($flag);
+        }
 
         if ($request->image) {
 
@@ -142,10 +144,12 @@ class CampaignController extends Controller
 
         }//end of  for each
 
-        $request->validate($rules + ['show_in_slider' => 'nullable|boolean']);
+        $request->validate($rules + ['show_in_slider' => 'nullable|boolean', 'is_urgent' => 'nullable|boolean', 'accepts_zakat' => 'nullable|boolean', 'show_donors' => 'nullable|boolean']);
 
         $request_data = $request->all();
-        $request_data['show_in_slider'] = $request->boolean('show_in_slider');
+        foreach (['show_in_slider', 'is_urgent', 'accepts_zakat', 'show_donors'] as $flag) {
+            $request_data[$flag] = $request->boolean($flag);
+        }
 
         if ($request->image) {
 

@@ -79,13 +79,40 @@ class WebController extends Controller
 
     public function campaigns(Request $request)
     {
-        $campaigns = Campaign::where('status', 'active')->where('complete', 'no')->with('category')->when($request->search, function ($q) use ($request) {
+        $filters = [
+            'q' => trim((string) $request->query('q', $request->query('search', ''))),
+            'category' => (int) $request->query('category', 0),
+            'sort' => in_array($request->query('sort'), ['newest', 'urgent', 'progress', 'remaining'], true) ? $request->query('sort') : 'newest',
+            'zakat' => $request->boolean('zakat'),
+        ];
 
-            return $q->whereTranslationLike('name', '%' . $request->search . '%');
+        $all = Campaign::query()->where('status', 'active')->where('complete', 'no')->with(['category', 'translations'])
+            ->when($filters['q'] !== '', fn ($q) => $q->whereTranslationLike('name', '%' . $filters['q'] . '%'))
+            ->when($filters['category'] > 0, fn ($q) => $q->where('c_category_id', $filters['category']))
+            ->when($filters['zakat'], fn ($q) => $q->where('accepts_zakat', true))
+            ->latest('id')
+            ->get();
 
-        })->get();
-        //dd($campaigns);
-        return view('web.campaigns', compact('campaigns'));
+        $sorted = match ($filters['sort']) {
+            'urgent' => $all->sortByDesc(fn ($c) => [(int) $c->is_urgent, $c->id]),
+            'progress' => $all->sortByDesc(fn ($c) => $c->stats()['percent']),
+            'remaining' => $all->sortBy(fn ($c) => $c->goal > 0 ? $c->stats()['remaining'] : PHP_INT_MAX),
+            default => $all,
+        };
+
+        $perPage = 9;
+        $page = max(1, (int) $request->query('page', 1));
+        $campaigns = new \Illuminate\Pagination\LengthAwarePaginator(
+            $sorted->values()->forPage($page, $perPage), $sorted->count(), $perPage, $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        // categories that currently have open campaigns
+        $openCategories = CampaignCategory::query()
+            ->whereHas('campaigns', fn ($q) => $q->where('status', 'active')->where('complete', 'no'))
+            ->get();
+
+        return view('web.campaigns', compact('campaigns', 'filters', 'openCategories'));
 
     }// end of index
 
@@ -176,6 +203,19 @@ class WebController extends Controller
 
     public function single_blog(Request $request, Blog $blog){
         return view('web.blog', compact('blog'));
+    }
+
+    /** Counts a share click once per visitor session and campaign. */
+    public function campaignShare(Request $request, Campaign $campaign)
+    {
+        $key = 'shared_campaigns';
+        $shared = $request->session()->get($key, []);
+        if (!in_array($campaign->id, $shared, true)) {
+            $campaign->increment('share_count');
+            $request->session()->put($key, array_merge($shared, [$campaign->id]));
+        }
+
+        return response()->json(['count' => (int) $campaign->fresh()->share_count]);
     }
 
     public function single_campaign(Request $request, Campaign $campaign){

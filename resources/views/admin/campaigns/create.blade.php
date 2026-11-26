@@ -191,6 +191,33 @@
                                         <option value="no">لا</option>
                                     </select>
                                 </div>
+                                {{--is_urgent--}}
+                                <div class="form-group col-lg-4">
+                                    <label for="form_select_is_urgent">@lang('site.campaign_is_urgent')</label>
+                                    <select name="is_urgent" class="form-control" id="form_select_is_urgent">
+                                        <option value="0" {{ old('is_urgent', '0') == 0 ? 'selected' : '' }}>@lang('site.no_option')</option>
+                                        <option value="1" {{ old('is_urgent', '0') == 1 ? 'selected' : '' }}>@lang('site.yes_option')</option>
+                                    </select>
+                                    <span class="form-text text-muted">@lang('site.campaign_is_urgent_help')</span>
+                                </div>
+                                {{--accepts_zakat--}}
+                                <div class="form-group col-lg-4">
+                                    <label for="form_select_accepts_zakat">@lang('site.campaign_accepts_zakat')</label>
+                                    <select name="accepts_zakat" class="form-control" id="form_select_accepts_zakat">
+                                        <option value="0" {{ old('accepts_zakat', '0') == 0 ? 'selected' : '' }}>@lang('site.no_option')</option>
+                                        <option value="1" {{ old('accepts_zakat', '0') == 1 ? 'selected' : '' }}>@lang('site.yes_option')</option>
+                                    </select>
+                                    <span class="form-text text-muted">@lang('site.campaign_accepts_zakat_help')</span>
+                                </div>
+                                {{--show_donors--}}
+                                <div class="form-group col-lg-4">
+                                    <label for="form_select_show_donors">@lang('site.campaign_show_donors')</label>
+                                    <select name="show_donors" class="form-control" id="form_select_show_donors">
+                                        <option value="0" {{ old('show_donors', '1') == 0 ? 'selected' : '' }}>@lang('site.no_option')</option>
+                                        <option value="1" {{ old('show_donors', '1') == 1 ? 'selected' : '' }}>@lang('site.yes_option')</option>
+                                    </select>
+                                    <span class="form-text text-muted">@lang('site.campaign_show_donors_help')</span>
+                                </div>
                                 {{--show in slider--}}
                                 <div class="form-group col-lg-4">
                                     <label for="form_select_show_in_slider">@lang('site.show_in_slider')</label>

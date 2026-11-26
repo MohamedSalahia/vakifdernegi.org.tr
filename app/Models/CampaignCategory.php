@@ -18,4 +18,9 @@ class CampaignCategory extends Model
         'created_at' => 'date:Y-m-d',
         'updated_at' => 'date:Y-m-d',
     ];
+
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class, 'c_category_id');
+    }
 }

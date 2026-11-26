@@ -4,6 +4,7 @@
             <div class="inner-box">
                 <div class="image">
                     <img src="{{($campaign->image ? url('/thumbnail/180/180/80/storage/campaign_images/'.$campaign->image) : url('/thumbnail/180/180/80/storage/settings/'.setting('logo')) )}}" alt="">
+                    @include('web.partials.campaign_badges', ['campaign' => $campaign])
                     <div class="overlay"><a href="{{route('campaign.show',['campaign'=>$campaign->id,make_slug($campaign->name_slug)])}}" class="donate-box-btn">@lang('site.campaign_details')</a></div>
                 </div>
                 <div class="lower-content">
@@ -11,27 +12,7 @@
                         <h4><a href="{{route('campaign.show',['campaign'=>$campaign->id,make_slug($campaign->name_slug)])}}">{{$campaign->name}}</a></h4>
                         <p>@lang('site.campaign_location'): {{$campaign->country}}</p>
                         <div class="text">{!! \Illuminate\Support\Str::words(strip_tags($campaign->description),5) !!}</div>
-                        <div class="info-box">
-                            <div class="raised">
-                                @php
-                                    $userDonation = \App\Models\Donation::confirmedTotalForCampaign($campaign->id);
-
-                                    $percentage = $campaign->goal > 0 ? min(100, round(($userDonation / $campaign->goal) * 100)) : 0
-
-                                @endphp
-                                {{--{{dd($percentage)}}--}}
-                                <a href="javascript:;"><span>@lang('site.donate_total'):</span>{{ number_format((float) $userDonation, 0, ",", ".") }} @lang('site.kuveyt_dinari')</a>
-                            </div>
-                            <div class="count-box">
-                                <span class="count-text" data-speed="3000" data-stop="{{$percentage}}">0</span><span class="affix">%</span>
-                            </div>
-                            <div class="goal">
-                                <a href="javascript:;"><span>@lang('site.require'):</span>{{ number_format((float) $campaign->goal, 0, ",", ".") }} @lang('site.kuveyt_dinari')</a>
-                            </div>
-                            {{--<div class="donars"><span>@lang('site.country')</span> <br>{{$campaign->country}}</div>--}}
-
-                        </div>
-
+                        @include('web.partials.campaign_stats', ['campaign' => $campaign])
                         <form action="#" class="donate-form default-form" style="margin-top: 28px;">
                             <ul class="chicklet-list clearfix">
                                 <li>

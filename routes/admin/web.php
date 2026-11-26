@@ -102,6 +102,13 @@ Route::prefix(LaravelLocalization::setLocale())->middleware([
             Route::delete('/campaigns/bulk_delete', 'CampaignController@bulkDelete')->name('campaigns.bulk_delete');
             Route::resource('campaigns', 'CampaignController');
 
+            // campaign updates ("Son Gelişmeler" tab)
+            Route::get('/campaigns/{campaign}/updates', 'CampaignUpdateController@index')->name('campaigns.updates.index');
+            Route::post('/campaigns/{campaign}/updates', 'CampaignUpdateController@store')->name('campaigns.updates.store');
+            Route::get('/campaigns/{campaign}/updates/{update}/edit', 'CampaignUpdateController@edit')->name('campaigns.updates.edit');
+            Route::put('/campaigns/{campaign}/updates/{update}', 'CampaignUpdateController@update')->name('campaigns.updates.update');
+            Route::delete('/campaigns/{campaign}/updates/{update}', 'CampaignUpdateController@destroy')->name('campaigns.updates.destroy');
+
             //campaign_categories routes
             Route::get('/campaign_categories/data', 'CampaignCategoryController@data')->name('campaign_categories.data');
             Route::delete('/campaign_categories/bulk_delete', 'CampaignCategoryController@bulkDelete')->name('campaign_categories.bulk_delete');

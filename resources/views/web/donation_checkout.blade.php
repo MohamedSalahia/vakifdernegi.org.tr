@@ -75,6 +75,11 @@
                                     @error('donor_phone')<span class="dc-error">{{ $message }}</span>@enderror
                                 </div>
 
+                                <label class="dc-consent" style="margin:6px 0 0">
+                                    <input type="checkbox" name="show_name" value="1" {{ old('show_name') ? 'checked' : '' }}>
+                                    <span>@lang('site.show_my_name')</span>
+                                </label>
+
                                 <h3 style="margin-top:24px">@lang('site.payment_method')</h3>
                                 @if($bankTransferEnabled)
                                     <label class="dc-method"><input type="radio" name="payment_method" value="bank_transfer" checked> @lang('site.pay_by_bank_transfer')</label>

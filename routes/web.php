@@ -14,6 +14,7 @@ Route::prefix(LaravelLocalization::setLocale())
         Route::post('cart/add', [\App\Http\Controllers\CartController::class, 'add'])->middleware('throttle:30,1')->name('add.to.cart');
         Route::post('cart/update', [\App\Http\Controllers\CartController::class, 'update'])->middleware('throttle:30,1')->name('cart.update');
         Route::post('cart/remove', [\App\Http\Controllers\CartController::class, 'remove'])->middleware('throttle:30,1')->name('cart.remove');
+        Route::post('campaign/{campaign}/share', [\App\Http\Controllers\WebController::class, 'campaignShare'])->middleware('throttle:20,1')->name('campaign.share');
 
         // Donation checkout (campaign / zakat / cart)
         Route::get('donate/campaign/{campaign}', [\App\Http\Controllers\DonationController::class, 'campaign'])->name('donate.campaign');
