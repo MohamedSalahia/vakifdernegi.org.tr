@@ -112,6 +112,11 @@ class WebController extends Controller
             ->whereHas('campaigns', fn ($q) => $q->where('status', 'active')->where('complete', 'no'))
             ->get();
 
+        // AJAX filtering (no page reload): only the results block is returned
+        if ($request->ajax()) {
+            return view('web.partials.campaigns_results', compact('campaigns', 'filters'));
+        }
+
         return view('web.campaigns', compact('campaigns', 'filters', 'openCategories'));
 
     }// end of index

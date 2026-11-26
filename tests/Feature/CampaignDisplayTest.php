@@ -114,6 +114,22 @@ class CampaignDisplayTest extends TestCase
         $this->assertLessThan(strpos($html, 'Filtre Normal Kampanyasi'), strpos($html, 'Filtre Acil Kampanyasi'));
     }
 
+    public function test_ajax_filtering_returns_only_the_results_block()
+    {
+        $zakat = $this->makeCampaign(['accepts_zakat' => true], 'Ajax Zekat Kampanyasi');
+        $plain = $this->makeCampaign([], 'Ajax Normal Kampanyasi');
+
+        $partial = $this->get('/campaigns?zakat=1&category=', ['X-Requested-With' => 'XMLHttpRequest'])->assertOk()->getContent();
+        $this->assertStringNotContainsString('<html', $partial);
+        $this->assertStringNotContainsString('id="vk-filters"', $partial);
+        $this->assertStringContainsString('vk-results', $partial);
+        $this->assertStringContainsString('Ajax Zekat Kampanyasi', $partial);
+        $this->assertStringNotContainsString('Ajax Normal Kampanyasi', $partial);
+
+        // normal request (shared link / no JS) still renders the full page with the filter form
+        $this->get('/campaigns?zakat=1')->assertOk()->assertSee('id="vk-filters"', false)->assertSee('id="vk-campaign-results"', false);
+    }
+
     public function test_admin_manages_updates_and_campaign_flags()
     {
         Storage::fake('public');
