@@ -48,7 +48,7 @@
     <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script><![endif]-->
     <!--[if lt IE 9]><script src="{{asset('web/js/respond.js')}}"></script><![endif]-->
 
-    <link href="{{asset('web/css/custom.css?id=6')}}" rel="stylesheet">
+    <link href="{{asset('web/css/custom.css?id=7')}}" rel="stylesheet">
 
     @stack('styles')
 </head>
