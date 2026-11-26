@@ -7,6 +7,7 @@ use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Page;
 use App\Services\CartService;
+use App\Support\DonationSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -23,8 +24,6 @@ use Illuminate\Support\Facades\URL;
  */
 class DonationController extends WebController
 {
-    public const MIN_AMOUNT = 5;
-    public const MAX_AMOUNT = 1000000;
     public const ZAKAT_TYPES = ['sadaka', 'zakat', 'kfaratYamin', 'kfaratSiyam', 'nzr'];
     private const SESSION_KEY = 'donation_checkout';
 
@@ -73,6 +72,20 @@ class DonationController extends WebController
         ]);
     }
 
+    /** Home page "quick donate": target = "campaign:{id}" or "type:{zakat|sadaka|...}". */
+    public function quick(Request $request)
+    {
+        $target = (string) $request->query('target', '');
+        $amount = $request->query('amount');
+
+        if (str_starts_with($target, 'campaign:')) {
+            return redirect()->route('donate.campaign', ['campaign' => (int) substr($target, 9), 'amount' => $amount]);
+        }
+        $type = str_starts_with($target, 'type:') ? substr($target, 5) : 'sadaka';
+
+        return redirect()->route('donate.zakat', ['price' => $amount, 'typeOfDonate' => $type]);
+    }
+
     public function cart(CartService $cart)
     {
         [$items] = $cart->items();
@@ -100,18 +113,28 @@ class DonationController extends WebController
             return redirect()->route('/')->with('error', __('site.donation_session_expired'));
         }
 
+        $dedicate = DonationSettings::enabled('dedication') && $request->boolean('dedicate');
+
         $data = $request->validate([
             'donor_name' => 'required|string|max:100',
             'donor_email' => 'nullable|email|max:150',
             'donor_phone' => 'nullable|string|max:30',
+            'dedication_type' => $dedicate ? 'required|in:memory,honor' : 'nullable',
+            'dedication_name' => $dedicate ? 'required|string|max:100' : 'nullable',
             'kvkk' => 'accepted',
         ], [], [
             'donor_name' => __('site.full_name'),
             'donor_email' => __('site.email'),
             'donor_phone' => __('site.phone'),
+            'dedication_name' => __('site.dedication_name'),
+            'dedication_type' => __('site.dedication_type'),
         ]);
 
-        $donation = DB::transaction(function () use ($checkout, $data, $request) {
+        // zakat intention: always for the "zakat" type, optional for zakat-eligible campaigns
+        $isZakat = ($checkout['zakat_type'] ?? false)
+            || (($checkout['zakat_eligible'] ?? false) && DonationSettings::enabled('zakat_option') && $request->boolean('is_zakat'));
+
+        $donation = DB::transaction(function () use ($checkout, $data, $request, $dedicate, $isZakat) {
             $donation = Donation::create([
                 'reference' => Donation::newReference(),
                 'user_id' => auth()->id(),
@@ -120,7 +143,10 @@ class DonationController extends WebController
                 'donor_name' => $data['donor_name'],
                 'donor_email' => $data['donor_email'] ?? null,
                 'donor_phone' => $data['donor_phone'] ?? null,
-                'show_name' => $request->boolean('show_name'),
+                'show_name' => DonationSettings::enabled('show_name_option') && $request->boolean('show_name'),
+                'dedication_type' => $dedicate ? $data['dedication_type'] : null,
+                'dedication_name' => $dedicate ? $data['dedication_name'] : null,
+                'is_zakat' => $isZakat,
                 'payment_method' => 'bank_transfer',
                 'status' => Donation::PENDING,
                 'locale' => app()->getLocale(),
@@ -165,6 +191,10 @@ class DonationController extends WebController
     private function checkout(array $donation)
     {
         $donation['amount'] = collect($donation['items'])->sum('amount');
+        $campaignIds = collect($donation['items'])->pluck('campaign_id')->filter();
+        $donation['zakat_type'] = collect($donation['items'])->contains(fn ($i) => $i['donation_type'] === 'zakat');
+        $donation['zakat_eligible'] = $campaignIds->isNotEmpty() && $campaignIds->count() === collect($donation['items'])->count()
+            && Campaign::query()->whereIn('id', $campaignIds)->where('accepts_zakat', true)->count() === $campaignIds->unique()->count();
         session([self::SESSION_KEY => $donation]);
 
         $bankTransferEnabled = (bool) config('donation.bank_transfer_enabled');
@@ -180,6 +210,6 @@ class DonationController extends WebController
         }
         $amount = round((float) $value, 2);
 
-        return ($amount >= self::MIN_AMOUNT && $amount <= self::MAX_AMOUNT) ? $amount : null;
+        return ($amount >= DonationSettings::min() && $amount <= DonationSettings::max()) ? $amount : null;
     }
 }

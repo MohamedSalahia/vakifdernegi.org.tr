@@ -70,7 +70,12 @@
                                                 <label for="nzr">@lang('site.nzr')</label>
                                             </li>
                                             <li>
-                                                <input type="number" min="5" name="price" class="price" placeholder="@lang('site.amount_placeholder')" required>
+                                                <div class="vk-quick__presets" style="justify-content:center;margin-bottom:10px">
+                                                    @foreach(\App\Support\DonationSettings::presets() as $presetAmount)
+                                                        <button type="button" class="vk-chip zk-chip" data-amount="{{ $presetAmount }}" dir="ltr">{{ number_format($presetAmount, 0, ',', '.') }} TL</button>
+                                                    @endforeach
+                                                </div>
+                                                <input type="number" min="{{ \App\Support\DonationSettings::min() }}" name="price" class="price" id="zk-amount" placeholder="@lang('site.amount_placeholder')" required>
                                             </li>
                                         </ul>
                                         <div class="other-amount d-flex align-items-center">
@@ -90,6 +95,15 @@
     @endsection
 
     @push('scripts')
+    <script>
+        document.querySelectorAll('.zk-chip').forEach(function (chip) {
+            chip.addEventListener('click', function () {
+                document.querySelectorAll('.zk-chip').forEach(function (c) { c.classList.remove('active'); });
+                chip.classList.add('active');
+                document.getElementById('zk-amount').value = chip.dataset.amount;
+            });
+        });
+    </script>
     {{--<script>
         $(function() {
 

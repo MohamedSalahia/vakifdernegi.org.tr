@@ -75,10 +75,39 @@
                                     @error('donor_phone')<span class="dc-error">{{ $message }}</span>@enderror
                                 </div>
 
-                                <label class="dc-consent" style="margin:6px 0 0">
-                                    <input type="checkbox" name="show_name" value="1" {{ old('show_name') ? 'checked' : '' }}>
-                                    <span>@lang('site.show_my_name')</span>
-                                </label>
+                                @if(\App\Support\DonationSettings::enabled('show_name_option'))
+                                    <label class="dc-consent" style="margin:6px 0 0">
+                                        <input type="checkbox" name="show_name" value="1" {{ old('show_name') ? 'checked' : '' }}>
+                                        <span>@lang('site.show_my_name')</span>
+                                    </label>
+                                @endif
+
+                                @if(($donation['zakat_eligible'] ?? false) && \App\Support\DonationSettings::enabled('zakat_option'))
+                                    <label class="dc-consent" style="margin:6px 0 0">
+                                        <input type="checkbox" name="is_zakat" value="1" {{ old('is_zakat') ? 'checked' : '' }}>
+                                        <span>@lang('site.donation_is_zakat')</span>
+                                    </label>
+                                @elseif($donation['zakat_type'] ?? false)
+                                    <div class="dc-ok" style="margin:10px 0 0">@lang('site.zakat_notice')</div>
+                                @endif
+
+                                @if(\App\Support\DonationSettings::enabled('dedication'))
+                                    <label class="dc-consent" style="margin:6px 0 0">
+                                        <input type="checkbox" name="dedicate" value="1" id="dc-dedicate" {{ old('dedicate') ? 'checked' : '' }}>
+                                        <span>@lang('site.dedicate_donation')</span>
+                                    </label>
+                                    <div id="dc-dedication" style="{{ old('dedicate') ? '' : 'display:none' }};padding:10px 14px;background:#fafafa;border-radius:8px;margin-top:6px">
+                                        <div class="dc-field" style="display:flex;gap:16px;flex-wrap:wrap">
+                                            <label style="font-weight:normal;display:flex;gap:6px;align-items:center"><input type="radio" name="dedication_type" value="memory" {{ old('dedication_type', 'memory') === 'memory' ? 'checked' : '' }}> @lang('site.dedication_memory')</label>
+                                            <label style="font-weight:normal;display:flex;gap:6px;align-items:center"><input type="radio" name="dedication_type" value="honor" {{ old('dedication_type') === 'honor' ? 'checked' : '' }}> @lang('site.dedication_honor')</label>
+                                        </div>
+                                        <div class="dc-field" style="margin-bottom:0">
+                                            <label for="dedication_name">@lang('site.dedication_name')</label>
+                                            <input type="text" id="dedication_name" name="dedication_name" class="form-control" maxlength="100" value="{{ old('dedication_name') }}">
+                                            @error('dedication_name')<span class="dc-error">{{ $message }}</span>@enderror
+                                        </div>
+                                    </div>
+                                @endif
 
                                 <h3 style="margin-top:24px">@lang('site.payment_method')</h3>
                                 @if($bankTransferEnabled)
@@ -111,3 +140,16 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        var cb = document.getElementById('dc-dedicate'), box = document.getElementById('dc-dedication');
+        if (!cb || !box) return;
+        cb.addEventListener('change', function () {
+            box.style.display = cb.checked ? '' : 'none';
+            document.getElementById('dedication_name').required = cb.checked;
+        });
+    })();
+</script>
+@endpush

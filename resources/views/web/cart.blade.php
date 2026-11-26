@@ -46,7 +46,7 @@
                                         <small>{{ $item->campaign->country }}</small>
                                     </div>
                                     <form class="cart-amount" onsubmit="return false;">
-                                        <input type="number" class="form-control cart-amount-input" min="{{ \App\Services\CartService::MIN_AMOUNT }}" step="1"
+                                        <input type="number" class="form-control cart-amount-input" min="{{ \App\Support\DonationSettings::min() }}" step="1"
                                                value="{{ rtrim(rtrim(number_format($item->total_price, 2, '.', ''), '0'), '.') }}" aria-label="@lang('site.donation_amount')">
                                         <span>TL</span>
                                         <button type="button" class="theme-btn btn-style-one cart-save" style="padding:6px 14px"><span>@lang('site.save')</span></button>

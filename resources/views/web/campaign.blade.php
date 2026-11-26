@@ -129,25 +129,15 @@
                             <div class="donate-form-wrapper">
                                 <form action="#" class="donate-form default-form" style="margin-top: 28px;">
                                     <ul class="chicklet-list clearfix">
-                                        <li>
-                                            <input type="radio" id="donate-amount-1-{{$campaign->id}}" value="10" name="donate-amount-{{$campaign->id}}">
-                                            <label for="donate-amount-1-{{$campaign->id}}" data-amount="10">10 @lang('site.kuveyt_dinari')</label>
-                                        </li>
-                                        <li>
-                                            <input type="radio" id="donate-amount-2-{{$campaign->id}}" value="20" name="donate-amount-{{$campaign->id}}" checked="checked">
-                                            <label for="donate-amount-2-{{$campaign->id}}" data-amount="20">20 @lang('site.kuveyt_dinari')</label>
-                                        </li>
-                                        <li>
-                                            <input type="radio" id="donate-amount-3-{{$campaign->id}}" value="30" name="donate-amount-{{$campaign->id}}">
-                                            <label for="donate-amount-3-{{$campaign->id}}" data-amount="30">30 @lang('site.kuveyt_dinari')</label>
-                                        </li>
-                                        <li>
-                                            <input type="radio" id="donate-amount-4-{{$campaign->id}}" value="50" name="donate-amount-{{$campaign->id}}">
-                                            <label for="donate-amount-4-{{$campaign->id}}" data-amount="50">50 @lang('site.kuveyt_dinari')</label>
-                                        </li>
+                                        @foreach(\App\Support\DonationSettings::presets() as $presetAmount)
+                                            <li>
+                                                <input type="radio" id="donate-amount-{{ $loop->iteration }}-{{$campaign->id}}" value="{{ $presetAmount }}" name="donate-amount-{{$campaign->id}}" {{ $loop->index === 1 ? 'checked' : '' }}>
+                                                <label for="donate-amount-{{ $loop->iteration }}-{{$campaign->id}}" data-amount="{{ $presetAmount }}" dir="ltr">{{ number_format($presetAmount, 0, ',', '.') }} TL</label>
+                                            </li>
+                                        @endforeach
                                         <li class="other-amount">
                                             <div class="input-container" data-message="Every dollar you donate helps end hunger.">
-                                                <input type="number" min="5"  name="price_{{$campaign->id}}" id="other-amount-{{$campaign->id}}" class="price_{{$campaign->id}}" placeholder="@lang('site.another_require')" dir="rtl" required>
+                                                <input type="number" min="{{ \App\Support\DonationSettings::min() }}"  name="price_{{$campaign->id}}" id="other-amount-{{$campaign->id}}" class="price_{{$campaign->id}}" placeholder="@lang('site.another_require')" dir="rtl" required>
                                             </div>
                                             <input type="hidden" name="campaignId_{{$campaign->id}}" value="{{$campaign->id}}" class="form-control campaignId_{{$campaign->id}}" />
                                         </li>

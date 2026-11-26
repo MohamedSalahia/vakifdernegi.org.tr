@@ -81,6 +81,10 @@
     </section>
     <!-- End Bnner Section -->
 
+    @if(\App\Support\DonationSettings::enabled('quick_donate'))
+        @include('web.partials.quick_donate')
+    @endif
+
     {{--Projects in progress--}}
     <section class="causes-section-four">
         <div class="auto-container">

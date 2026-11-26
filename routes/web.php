@@ -19,6 +19,7 @@ Route::prefix(LaravelLocalization::setLocale())
         // Donation checkout (campaign / zakat / cart)
         Route::get('donate/campaign/{campaign}', [\App\Http\Controllers\DonationController::class, 'campaign'])->name('donate.campaign');
         Route::get('donate/zakat', [\App\Http\Controllers\DonationController::class, 'zakat'])->name('donate.zakat');
+        Route::get('donate/quick', [\App\Http\Controllers\DonationController::class, 'quick'])->name('donate.quick');
         Route::get('donate/cart', [\App\Http\Controllers\DonationController::class, 'cart'])->name('donate.cart');
         Route::post('donate', [\App\Http\Controllers\DonationController::class, 'store'])->middleware('throttle:10,1')->name('donate.store');
         Route::get('donate/thanks/{donation}', [\App\Http\Controllers\DonationController::class, 'show'])->middleware('signed')->name('donate.show');

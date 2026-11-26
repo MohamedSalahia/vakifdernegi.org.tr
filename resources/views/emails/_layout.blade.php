@@ -15,6 +15,12 @@
                     @foreach($donation->items as $item)
                         <tr><td style="border-top:1px solid #eee">{{ $item->label }}</td><td dir="ltr" style="border-top:1px solid #eee">{{ number_format($item->amount, 2, ',', '.') }} TL</td></tr>
                     @endforeach
+                    @if($donation->dedicationText())
+                        <tr><td style="border-top:1px solid #eee">{{ __('site.dedication') }}</td><td style="border-top:1px solid #eee">{{ $donation->dedicationText() }}</td></tr>
+                    @endif
+                    @if($donation->is_zakat)
+                        <tr><td style="border-top:1px solid #eee">{{ __('site.donation_type') }}</td><td style="border-top:1px solid #eee">{{ __('site.zakat_type') }}</td></tr>
+                    @endif
                     <tr style="background:#f7f7f7"><td><strong>{{ __('site.total') }}</strong></td><td dir="ltr"><strong>{{ number_format($donation->amount, 2, ',', '.') }} TL</strong></td></tr>
                 </table>
             </td></tr>

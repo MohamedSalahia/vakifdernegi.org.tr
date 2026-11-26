@@ -16,6 +16,8 @@ class Donation extends Model
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'show_name' => 'boolean',
+        'is_zakat' => 'boolean',
         'kvkk_accepted_at' => 'datetime',
         'confirmed_at' => 'datetime',
         'cancelled_at' => 'datetime',
@@ -34,6 +36,16 @@ class Donation extends Model
     public function confirmer()
     {
         return $this->belongsTo(User::class, 'confirmed_by');
+    }
+
+    /** e.g. "Ahmet Yılmaz adına (vefat etmiş)" / "عن روح: أحمد" — null when not dedicated. */
+    public function dedicationText(): ?string
+    {
+        if (!$this->dedication_type || !$this->dedication_name) {
+            return null;
+        }
+
+        return __('site.dedication_' . $this->dedication_type . '_text', ['name' => $this->dedication_name]);
     }
 
     public function scopeConfirmed(Builder $query): Builder

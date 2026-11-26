@@ -32,6 +32,9 @@
                                     <tr><th style="width:40%">@lang('site.full_name')</th><td>{{ $donation->donor_name }}</td></tr>
                                     <tr><th>@lang('site.email')</th><td>@if($donation->donor_email)<a href="mailto:{{ $donation->donor_email }}">{{ $donation->donor_email }}</a>@else — @endif</td></tr>
                                     <tr><th>@lang('site.phone')</th><td dir="ltr">{{ $donation->donor_phone ?: '—' }}</td></tr>
+                                    <tr><th>@lang('site.show_name_admin')</th><td>{{ $donation->show_name ? __('site.yes_option') : __('site.no_option') }}</td></tr>
+                                    <tr><th>@lang('site.zakat_type')</th><td>{{ $donation->is_zakat ? __('site.yes_option') : __('site.no_option') }}</td></tr>
+                                    @if($donation->dedicationText())<tr><th>@lang('site.dedication')</th><td>{{ $donation->dedicationText() }}</td></tr>@endif
                                     <tr><th>@lang('site.payment_method')</th><td>@lang('site.payment_method_' . $donation->payment_method)</td></tr>
                                     <tr><th>@lang('site.donation_date')</th><td dir="ltr">{{ $donation->created_at->format('Y-m-d H:i') }}</td></tr>
                                     <tr><th>@lang('site.kvkk_accepted_at')</th><td dir="ltr">{{ optional($donation->kvkk_accepted_at)->format('Y-m-d H:i') ?: '—' }}</td></tr>

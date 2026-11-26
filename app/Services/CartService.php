@@ -21,8 +21,7 @@ class CartService
 {
     public const COOKIE = 'cart_token';
     public const COOKIE_MINUTES = 60 * 24 * 30;
-    public const MIN_AMOUNT = 5;
-    public const MAX_AMOUNT = 1000000;
+    // limits come from the admin "Bağış Ayarları" page (App\Support\DonationSettings)
 
     /** Guest token from the cookie, created (and queued) on first need. */
     public function token(bool $create = false): ?string
@@ -70,7 +69,7 @@ class CartService
             : ['user_id' => null, 'cookie_cart_identifier' => $this->token(true)];
 
         $row = $this->query()->where('campaign_id', $campaign->id)->first();
-        $newAmount = min(self::MAX_AMOUNT, round(($row ? (float) $row->total_price : 0) + $amount, 2));
+        $newAmount = min(\App\Support\DonationSettings::max(), round(($row ? (float) $row->total_price : 0) + $amount, 2));
 
         if ($row) {
             $row->update(['price' => $newAmount, 'total_price' => $newAmount]);
@@ -139,7 +138,7 @@ class CartService
         foreach ($guestRows as $guest) {
             $existing = UserCart::query()->where('status', 0)->where('user_id', $userId)->where('campaign_id', $guest->campaign_id)->first();
             if ($existing) {
-                $sum = min(self::MAX_AMOUNT, round((float) $existing->total_price + (float) $guest->total_price, 2));
+                $sum = min(\App\Support\DonationSettings::max(), round((float) $existing->total_price + (float) $guest->total_price, 2));
                 $existing->update(['price' => $sum, 'total_price' => $sum]);
                 $guest->delete();
             } else {

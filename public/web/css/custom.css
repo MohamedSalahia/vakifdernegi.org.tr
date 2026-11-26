@@ -143,3 +143,15 @@ html[dir="rtl"] .vk-toasts { right: 24px; }
 .vk-share a, .vk-share button { width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; border: 0; font-size: 17px; cursor: pointer; }
 .vk-share .wa { background: #25d366; } .vk-share .fb { background: #1877f2; } .vk-share .tw { background: #111; } .vk-share .tg { background: #229ed9; } .vk-share .cp { background: #777; }
 .vk-share__count { color: #777; font-size: 14px; margin-inline-start: 6px; }
+
+/* Quick donate (home) + preset chips */
+.vk-quick { position: relative; z-index: 5; margin-top: -60px; margin-bottom: 20px; }
+.vk-quick__box { background: #fff; border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.12); padding: 24px 28px; }
+.vk-quick__title { font-size: 22px; margin-bottom: 16px; color: var(--theme-color, #8a1f5c); }
+.vk-quick__grid { display: grid; grid-template-columns: 1.1fr 1.6fr auto; gap: 18px; align-items: end; }
+.vk-quick__field label { display: block; font-weight: 600; margin-bottom: 6px; }
+.vk-quick__presets { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.vk-quick__custom { width: 130px; }
+.vk-chip { border: 1px solid #ddd; background: #fff; color: #444; border-radius: 20px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+.vk-chip.active, .vk-chip:hover { background: var(--theme-color, #8a1f5c); border-color: var(--theme-color, #8a1f5c); color: #fff; }
+@media (max-width: 991px) { .vk-quick { margin-top: 20px; } .vk-quick__grid { grid-template-columns: 1fr; } }

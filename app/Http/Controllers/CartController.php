@@ -85,7 +85,7 @@ class CartController extends Controller
         }
 
         return $request->validate($rules + [
-            'amount' => 'required|numeric|min:' . CartService::MIN_AMOUNT . '|max:' . CartService::MAX_AMOUNT,
+            'amount' => 'required|numeric|min:' . \App\Support\DonationSettings::min() . '|max:' . \App\Support\DonationSettings::max(),
         ], [], ['amount' => __('site.donation_amount')]);
     }
 }

@@ -501,6 +501,12 @@
                             <span class="menu-text">@lang('site.settings')</span>
                         </a>
                     </li>
+                    <li class="menu-item {{ request()->is('*settings/donations*') ? 'menu-item-active' : '' }}" aria-haspopup="true">
+                        <a href="{{route('admin.settings.donations')}}" class="menu-link">
+                            <span class="svg-icon menu-icon"><span class="fa fa-hand-holding-heart" style="font-size:18px"></span></span>
+                            <span class="menu-text">@lang('site.donation_settings')</span>
+                        </a>
+                    </li>
                 @endif
 
                 {{--contact--}}

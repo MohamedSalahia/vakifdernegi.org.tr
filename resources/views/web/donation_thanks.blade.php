@@ -35,6 +35,8 @@
                             <span>@lang('site.total')</span>
                             <span dir="ltr">{{ number_format($donation->amount, 2, ',', '.') }} TL</span>
                         </div>
+                        @if($donation->is_zakat)<div class="dc-row"><span>@lang('site.donation_type')</span><strong>@lang('site.zakat_type')</strong></div>@endif
+                        @if($donation->dedicationText())<div class="dc-row"><span>@lang('site.dedication')</span><strong>{{ $donation->dedicationText() }}</strong></div>@endif
                         <div class="dc-row"><span>@lang('site.donation_status')</span><strong>@lang('site.donation_status_' . $donation->status)</strong></div>
                     </div>
                 </div>
