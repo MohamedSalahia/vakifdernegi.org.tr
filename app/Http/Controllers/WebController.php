@@ -184,6 +184,10 @@ class WebController extends Controller
 
         Contact::create($data);
 
+        if ($request->expectsJson()) {
+            return response()->json(['message' => __('site.success')]);
+        }
+
         session()->flash('contact_success', __('site.added_successfully'));
         //dd(session());
         return redirect(url()->previous() . '#contact-sent');

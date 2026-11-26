@@ -115,6 +115,49 @@
         setTimeout(hide, type === 'error' ? 6000 : 3500);
     };
 </script>
+{{-- Forms with data-ajax-form submit without reload: JSON {message, redirect?}; 422 errors shown under fields --}}
+<script>
+    (function () {
+        function clearErrors(form) { form.querySelectorAll('.vk-field-error').forEach(function (e) { e.remove(); }); }
+        function showErrors(form, errors) {
+            Object.keys(errors).forEach(function (name) {
+                var field = form.querySelector('[name="' + name + '"]');
+                if (!field) return;
+                var span = document.createElement('span');
+                span.className = 'vk-field-error';
+                span.style.cssText = 'color:#c62828;font-size:13px;display:block;margin-top:4px';
+                span.textContent = errors[name][0];
+                (field.closest('label') || field).insertAdjacentElement('afterend', span);
+            });
+        }
+        document.addEventListener('submit', function (e) {
+            var form = e.target;
+            if (!form.matches('form[data-ajax-form]') || !window.fetch) return;
+            e.preventDefault();
+            var btn = form.querySelector('[type="submit"]');
+            if (btn) btn.disabled = true;
+            clearErrors(form);
+            fetch(form.action, {
+                method: 'POST', credentials: 'same-origin', body: new FormData(form),
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(function (r) {
+                return r.json().catch(function () { return {}; }).then(function (body) {
+                    if (r.status === 422 && body.errors) {
+                        showErrors(form, body.errors);
+                        vakifToast(Object.values(body.errors)[0][0], 'error');
+                        return;
+                    }
+                    if (!r.ok) { vakifToast(body.message || @json(__('site.cart_error')), 'error'); return; }
+                    if (body.message) vakifToast(body.message, 'success');
+                    if (body.redirect) { window.location.href = body.redirect; return; }
+                    if (form.hasAttribute('data-reset')) form.reset();
+                    form.dispatchEvent(new CustomEvent('ajax:success', { detail: body }));
+                });
+            }).catch(function () { vakifToast(@json(__('site.cart_error')), 'error'); })
+              .finally(function () { if (btn) btn.disabled = false; });
+        });
+    })();
+</script>
 {{-- Donation cart helper (POST + CSRF) --}}
 <script>
     window.vakifCart = (function () {

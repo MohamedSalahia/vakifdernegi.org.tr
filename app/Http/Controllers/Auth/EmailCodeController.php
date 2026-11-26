@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Passwordless sign-in: a 6-digit code is e-mailed, valid 10 minutes, single use,
@@ -59,6 +60,10 @@ class EmailCodeController extends Controller
 
         $request->session()->put('login_code_email', $email);
 
+        if ($request->expectsJson()) {
+            return response()->json(['message' => __('site.login_code_sent'), 'email' => $email]);
+        }
+
         return redirect()->route('login.code.verify')->with('success', __('site.login_code_sent'));
     }
 
@@ -76,18 +81,22 @@ class EmailCodeController extends Controller
     {
         $email = $request->session()->get('login_code_email');
         if (!$email) {
+            if ($request->expectsJson()) {
+                throw ValidationException::withMessages(['code' => __('site.login_code_expired')]);
+            }
+
             return redirect()->route('login.code');
         }
         $data = $request->validate(['code' => 'required|digits:6']);
 
         $login = LoginCode::where('email', $email)->whereNull('used_at')->where('expires_at', '>', now())->latest('id')->first();
         if (!$login || $login->attempts >= LoginCode::MAX_ATTEMPTS) {
-            return back()->withErrors(['code' => __('site.login_code_expired')]);
+            throw ValidationException::withMessages(['code' => __('site.login_code_expired')]);
         }
         if (!hash_equals($login->code_hash, LoginCode::hash($email, $data['code']))) {
             $login->increment('attempts');
 
-            return back()->withErrors(['code' => __('site.login_code_wrong')]);
+            throw ValidationException::withMessages(['code' => __('site.login_code_wrong')]);
         }
 
         $login->update(['used_at' => now()]);
@@ -96,6 +105,11 @@ class EmailCodeController extends Controller
         $request->session()->forget('login_code_email');
         $request->session()->regenerate();
 
-        return redirect()->intended(AccountService::homeFor($user));
+        $target = redirect()->intended(AccountService::homeFor($user))->getTargetUrl();
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => $target]);
+        }
+
+        return redirect()->to($target);
     }
 }

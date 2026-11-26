@@ -66,6 +66,29 @@ class AccountTest extends TestCase
         $this->assertNotNull(LoginCode::where('email', $email)->first()->used_at); // single use
     }
 
+    public function test_email_code_works_without_page_reload_json()
+    {
+        Mail::fake();
+        $email = 'ajax.' . uniqid() . '@example.com';
+        $this->postJson('/login/code', ['email' => $email])->assertOk()->assertJson(['email' => $email]);
+        $code = null;
+        Mail::assertSent(LoginCodeMail::class, function ($m) use (&$code) { $code = $m->code; return true; });
+
+        $wrong = $code === '111111' ? '222222' : '111111';
+        $this->postJson('/login/code/verify', ['code' => $wrong])->assertStatus(422)->assertJsonValidationErrors('code');
+        $this->postJson('/login/code/verify', ['code' => $code])->assertOk()->assertJson(['redirect' => route('account')]);
+        $this->assertAuthenticated();
+    }
+
+    public function test_contact_form_works_without_page_reload_json()
+    {
+        $this->postJson('/contact', ['name' => 'A', 'email' => 'a@example.com', 'phone' => '1', 'subject' => 'S', 'message' => 'M'])
+            ->assertStatus(422)->assertJsonValidationErrors('kvkk');
+        $this->postJson('/contact', ['name' => 'A', 'email' => 'a@example.com', 'phone' => '1', 'subject' => 'S', 'message' => 'M', 'kvkk' => '1'])
+            ->assertOk()->assertJsonStructure(['message']);
+        $this->assertDatabaseHas('contacts', ['email' => 'a@example.com', 'subject' => 'S']);
+    }
+
     public function test_wrong_codes_are_limited()
     {
         $email = 'deneme.' . uniqid() . '@example.com';

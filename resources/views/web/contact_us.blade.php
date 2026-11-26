@@ -67,36 +67,36 @@
                         </div>
                     @endif
                     <div class=" mb-40">
-                        <form name="" class="row contact-form" action="{{ route('contact.post') }}#contact-sent" method="POST">
+                        <form name="" class="row contact-form" action="{{ route('contact.post') }}#contact-sent" method="POST" data-ajax-form data-reset>
                             {{ csrf_field() }}
                             <!-- Contact Form Input -->
                             <div  class="col-md-12 col-lg-6" >
-                                <input type="text" name="name" class="form-control " placeholder="@lang('site.name')" required>
+                                <input type="text" name="name" class="form-control " placeholder="@lang('site.name')" value="{{ old('name') }}" required>
                                 @if ($errors->has('name'))
                                     <span style="color: red" class="error">{{ $errors->first('name') }}</span>
                                 @endif
                             </div>
 
                             <div  class="col-md-12 col-lg-6">
-                                <input type="email" name="email" class="form-control " placeholder="@lang('site.email')" required>
+                                <input type="email" name="email" class="form-control " placeholder="@lang('site.email')" value="{{ old('email') }}" required>
                                 @if ($errors->has('email'))
                                     <span style="color: red" class="error">{{ $errors->first('email') }}</span>
                                 @endif
                             </div>
 
                             <div  class="col-md-12 col-lg-6">
-                                <input type="text" name="phone" class="form-control " placeholder="@lang('site.phone')" required>
+                                <input type="text" name="phone" class="form-control " placeholder="@lang('site.phone')" value="{{ old('phone') }}" required>
                                 @if ($errors->has('phone'))
                                     <span style="color: red" class="error">{{ $errors->first('phone') }}</span>
                                 @endif
                             </div>
 
                             <div  class="col-lg-12">
-                                <input type="text" name="subject" class="form-control " placeholder="@lang('site.subject')" required>
+                                <input type="text" name="subject" class="form-control " placeholder="@lang('site.subject')" value="{{ old('subject') }}" required>
                             </div>
 
                             <div  class="col-lg-12 input-message">
-                                <textarea class="form-control message" name="message" rows="6" placeholder="@lang('site.message')" required></textarea>
+                                <textarea class="form-control message" name="message" rows="6" placeholder="@lang('site.message')" required>{{ old('message') }}</textarea>
                             </div>
 
                             <div class="col-lg-12" style="margin:10px 0">
