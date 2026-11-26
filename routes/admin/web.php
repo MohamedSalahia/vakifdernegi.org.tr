@@ -118,6 +118,11 @@ Route::prefix(LaravelLocalization::setLocale())->middleware([
             Route::get('/settings/general', 'SettingController@general')->name('settings.general');
             Route::get('/settings/donations', 'DonationSettingsController@edit')->name('settings.donations');
             Route::put('/settings/donations', 'DonationSettingsController@update')->name('settings.donations.update');
+
+            // transparency & help centre
+            Route::resource('expenses', 'ExpenseController')->except(['show']);
+            Route::resource('annual_reports', 'AnnualReportController')->except(['show'])->parameters(['annual_reports' => 'annualReport']);
+            Route::resource('faqs', 'FaqController')->except(['show']);
             // Route::get('/settings/social_links', 'SettingController@socialLinks')->name('settings.social_links');
             // Route::get('/settings/mobile_links', 'SettingController@mobileLinks')->name('settings.mobile_links');
             Route::resource('settings', 'SettingController')->only(['store']);

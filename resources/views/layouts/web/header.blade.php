@@ -70,6 +70,11 @@
                                             <ul>
                                                 <li><a href="{{route('about_us')}}">@lang('site.about_us')</a></li>
                                                 <li><a href="{{route('bank_accounts')}}">@lang('site.bank_accounts')</a></li>
+                                                @if(\App\Support\DonationSettings::enabled('transparency'))
+                                                    <li><a href="{{route('transparency')}}">@lang('site.transparency')</a></li>
+                                                @endif
+                                                <li><a href="{{route('reports')}}">@lang('site.annual_reports')</a></li>
+                                                <li><a href="{{route('help')}}">@lang('site.help_center')</a></li>
                                                 <li><a href="{{route('privacy')}}">@lang('site.privacy')</a></li>
                                                 <li><a href="{{route('terms-of-use')}}">@lang('site.term')</a></li>
                                                 <li><a href="{{route('donation-policy')}}">@lang('site.donation_policy')</a></li>

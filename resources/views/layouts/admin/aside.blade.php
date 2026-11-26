@@ -507,6 +507,30 @@
                             <span class="menu-text">@lang('site.donation_settings')</span>
                         </a>
                     </li>
+                    @if (auth()->user()->hasPermission('update_user_donations'))
+                    <li class="menu-item {{ request()->is('*admin/expenses*') ? 'menu-item-active' : '' }}" aria-haspopup="true">
+                        <a href="{{ route('admin.expenses.index') }}" class="menu-link">
+                            <span class="svg-icon menu-icon"><span class="fa fa-receipt" style="font-size:17px"></span></span>
+                            <span class="menu-text">@lang('site.expenses')</span>
+                        </a>
+                    </li>
+                    @endif
+                    @if (auth()->user()->hasPermission('read_settings'))
+                    <li class="menu-item {{ request()->is('*admin/annual_reports*') ? 'menu-item-active' : '' }}" aria-haspopup="true">
+                        <a href="{{ route('admin.annual_reports.index') }}" class="menu-link">
+                            <span class="svg-icon menu-icon"><span class="fa fa-file-pdf" style="font-size:17px"></span></span>
+                            <span class="menu-text">@lang('site.annual_reports')</span>
+                        </a>
+                    </li>
+                    @endif
+                    @if (auth()->user()->hasPermission('read_settings'))
+                    <li class="menu-item {{ request()->is('*admin/faqs*') ? 'menu-item-active' : '' }}" aria-haspopup="true">
+                        <a href="{{ route('admin.faqs.index') }}" class="menu-link">
+                            <span class="svg-icon menu-icon"><span class="fa fa-question-circle" style="font-size:17px"></span></span>
+                            <span class="menu-text">@lang('site.faqs')</span>
+                        </a>
+                    </li>
+                    @endif
                 @endif
 
                 {{--contact--}}

@@ -21,6 +21,11 @@
                         <li><a href="{{ route('about_us') }}">@lang('site.about_us')</a></li>
                         <li><a href="{{ route('campaigns') }}">@lang('site.campaigns')</a></li>
                         <li><a href="{{ route('bank_accounts') }}">@lang('site.bank_accounts')</a></li>
+                        @if(\App\Support\DonationSettings::enabled('transparency'))
+                            <li><a href="{{ route('transparency') }}">@lang('site.transparency')</a></li>
+                        @endif
+                        <li><a href="{{ route('reports') }}">@lang('site.annual_reports')</a></li>
+                        <li><a href="{{ route('help') }}">@lang('site.help_center')</a></li>
                         <li><a href="{{ route('contact_us') }}">@lang('site.contact_us')</a></li>
                     </ul>
                 </div>

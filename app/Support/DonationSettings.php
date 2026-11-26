@@ -16,6 +16,7 @@ class DonationSettings
         'dedication_enabled' => true,
         'zakat_option_enabled' => true,
         'show_name_option_enabled' => true,
+        'transparency_enabled' => true,
     ];
 
     public static function all(): array

@@ -48,6 +48,7 @@ class DonationSettingsController extends Controller
             'dedication_enabled' => $request->boolean('dedication_enabled'),
             'zakat_option_enabled' => $request->boolean('zakat_option_enabled'),
             'show_name_option_enabled' => $request->boolean('show_name_option_enabled'),
+            'transparency_enabled' => $request->boolean('transparency_enabled'),
         ]])->save();
 
         session()->flash('success', __('site.updated_successfully'));

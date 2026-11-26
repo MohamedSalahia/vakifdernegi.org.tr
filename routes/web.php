@@ -42,6 +42,9 @@ Route::prefix(LaravelLocalization::setLocale())
 
         Route::get('bank_accounts', 'App\Http\Controllers\WebController@bank_accounts')->name('bank_accounts');
         Route::get('/privacy', 'App\Http\Controllers\WebController@privacy')->name('privacy');
+        Route::get('/transparency', [\App\Http\Controllers\TransparencyController::class, 'transparency'])->name('transparency');
+        Route::get('/reports', [\App\Http\Controllers\TransparencyController::class, 'reports'])->name('reports');
+        Route::get('/help', [\App\Http\Controllers\TransparencyController::class, 'help'])->name('help');
         Route::get('/terms-of-use', 'App\Http\Controllers\WebController@terms_of_use')->name('terms-of-use');
         Route::get('/donation-policy', 'App\Http\Controllers\WebController@donation_policy')->name('donation-policy');
         Route::get('/delivery-and-refund-policy', 'App\Http\Controllers\WebController@delivery_and_refund')->name('delivery-and-refund-policy');

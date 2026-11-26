@@ -34,7 +34,7 @@
                             </div>
 
                             <h4 class="mb-5 mt-5">@lang('site.ds_features')</h4>
-                            @foreach(['quick_donate', 'dedication', 'zakat_option', 'show_name_option'] as $feature)
+                            @foreach(['quick_donate', 'dedication', 'zakat_option', 'show_name_option', 'transparency'] as $feature)
                                 <div class="form-group">
                                     <label class="checkbox checkbox-lg">
                                         <input type="checkbox" name="{{ $feature }}_enabled" value="1" {{ old($feature.'_enabled', $settings[$feature.'_enabled']) ? 'checked' : '' }}>
