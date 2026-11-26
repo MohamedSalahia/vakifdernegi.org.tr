@@ -16,9 +16,11 @@
                             <div class="count-box">
                                 <span class="count-text" ></span><span class="affix">@lang('site.complete')</span>
                             </div>
+                            @if((float) $campaign->goal > 0)
                             <div class="goal">
                                 <a href="javascript:;"><span>@lang('site.toplam_tutar'):</span>{{ number_format((float) $campaign->goal, 0, ",", ".") }} @lang('site.kuveyt_dinari')</a>
                             </div>
+                            @endif
                         </div>
 
                     </div>
